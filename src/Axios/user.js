@@ -6,8 +6,8 @@ axios.defaults.withCredentials = true;
 
 export const getUsers = async () => {
     try {
-        const response = await axios.get(`${apiURL}/user`); // /api/user
-        return response.data;
+        const response = await axios.get(`${apiURL}/api/user`); // /api/user
+        return response.data.data;
     } catch (error) {
         console.error(error);
     }
@@ -26,7 +26,7 @@ export const putUser = async (user) => {
     var date = new Date();
     try {
         axios
-            .put(`${apiURL}/user/${user._id}`, {
+            .put(`${apiURL}/api/user/${user._id}`, {
                 id: user._id,
                 _id: user._id,
                 username: user.username,
@@ -55,7 +55,7 @@ export const putUser = async (user) => {
 export const deleteUser = async (id) => {
     try {
         axios
-            .delete(`${apiURL}/user/${id}`, {
+            .delete(`${apiURL}/api/user/${id}`, {
                 _id: id,
             })
             .then((response) => {
