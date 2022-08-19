@@ -11,7 +11,7 @@ export default [
         label: "資料集",
         icon: <DatabaseOutlined />,
         element: <Data />,
-        path: "/data",
+        path: "/",
     },
     {
         label: "使用者管理",
