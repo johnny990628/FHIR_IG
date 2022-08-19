@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Space, Table, Tag } from "antd";
+import { Space, Table, Tag, Button } from "antd";
 import { deleteUser } from "./../Axios/user.js";
 import { getUsers } from "../Axios/user.js";
 import RegisterUser from "../Components/RegisterUser";
+import EditUser from "../Components/EditUser";
 
 const User = () => {
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([
+        // {
+        //     _id: "32EE08BB-752E-478D-A27D-E46DC01ECF87",
+        //     username: "root",
+        //     email: "root@mail.com",
+        //     firstName: "USER",
+        //     lastName: "ROOT",
+        //     userType: "admin",
+        //     status: true,
+        //     _createTime: "2022-08-17T14:58:59.370Z",
+        //     _updaterId: null,
+        //     _upTime: null,
+        // },
+    ]);
 
     const deletenotstatususer = (id) => {
         setUsers(users.filter((user) => user._id !== id));
@@ -18,7 +32,6 @@ const User = () => {
         };
         fetchData();
     }, []);
-
 
     const columns = [
         {
@@ -42,17 +55,19 @@ const User = () => {
             title: "Action",
             key: "action",
             render: (_, record) => (
-                <Space size="middle">
-                    <a
-                        style={{ color: "#fc86ad" }}
+                <>
+                    <EditUser record={record} />
+                    <Button danger 
+                        type="text"
+                        style={{marginLeft: "5px"}}
                         onClick={async () => {
                             await deleteUser(record._id);
                             deletenotstatususer(record._id);
                         }}
                     >
-                        Delete
-                    </a>
-                </Space>
+                        刪除
+                    </Button>
+                </>
             ),
         },
     ];

@@ -1,8 +1,12 @@
 import axios from "axios";
-const config = require("../config.json");
+import Cookies from "universal-cookie";
 
+const config = require("../config.json");
 const apiURL = config.apiURL;
 axios.defaults.withCredentials = true;
+
+const cookies = new Cookies();
+const loginUser=cookies.get("user")
 
 export const getUsers = async () => {
     try {
@@ -37,7 +41,7 @@ export const putUser = async (user) => {
                 userType: user.userType,
                 status: user.status,
                 _createTime: user._createTime,
-                _updaterId: user._updaterId, //admin name
+                _updaterId: loginUser._id, //admin name
                 _upTime: date,
             })
             .then((response) => {
