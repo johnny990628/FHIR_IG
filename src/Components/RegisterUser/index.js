@@ -6,7 +6,6 @@ import { getUsers, deleteUser, putUser } from "../../Axios/user";
 const RegisterUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [notstatususer, setNotstatususer] = useState([]);
-    console.log(props.users);
     const columns = [
         {
             title: "FirstName",
