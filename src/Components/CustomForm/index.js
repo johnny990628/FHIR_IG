@@ -2,7 +2,7 @@ import { Button, Form, Input, Space, Tag } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addData, editData } from "../../Redux/Slices/Data";
-import { closeModal } from "../../Redux/Slices/Modal";
+import { closeModal, openModal, switchForm } from "../../Redux/Slices/Modal";
 const CustomForm = () => {
   const [form] = Form.useForm();
 
@@ -20,9 +20,13 @@ const CustomForm = () => {
       dispatch(addData({ data: { ...formData, id } }));
     }
     if (type === "edit") {
-      dispatch(editData({ data: { ...data, ...formData, id: data.id } }));
+      dispatch(editData({ data: { ...formData } }));
     }
     dispatch(closeModal());
+  };
+
+  const handleTagClick = (tagType) => {
+    dispatch(switchForm({ tag: tagType, tagData: [] }));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -223,19 +227,21 @@ const CustomForm = () => {
         name === "implementations" || name === "editions" ? (
           <Form.Item key={name} label={label} name={name} rules={rules}>
             <Space direction="vertical">
-              <Button>Edit {label}</Button>
-              <div>
-                {data[name] &&
-                  data[name].map((i) => (
-                    <Tag
-                      key={i.name + i["ig-version"]}
-                      style={{ marginBottom: ".5rem" }}
-                    >
-                      {`${i.name} `}
-                      {i["ig-version"] && i["ig-version"]}
-                    </Tag>
-                  ))}
-              </div>
+              <Button onClick={() => handleTagClick(name)}>Edit {label}</Button>
+              {data && (
+                <div>
+                  {data[name] &&
+                    data[name].map((i) => (
+                      <Tag
+                        key={i.name + i["ig-version"]}
+                        style={{ marginBottom: ".5rem" }}
+                      >
+                        {`${i.name} `}
+                        {i["ig-version"] && i["ig-version"]}
+                      </Tag>
+                    ))}
+                </div>
+              )}
             </Space>
           </Form.Item>
         ) : (
@@ -252,7 +258,7 @@ const CustomForm = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          提交
+          Submit
         </Button>
       </Form.Item>
     </Form>

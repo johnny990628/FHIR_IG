@@ -3,17 +3,20 @@ import { useSelector, useDispatch } from "react-redux";
 import CustomTable from "../Components/CustomTable";
 import { openModal } from "../Redux/Slices/Modal";
 import { removeData } from "../Redux/Slices/Data";
+import SearchBar from "../Components/SearchBar";
 
 const Data = () => {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.data);
 
   const handleEdit = (data) => {
-    console.log(data);
     dispatch(openModal({ data, type: "edit" }));
   };
-  const handleDelete = (id) => {
-    dispatch(removeData({ id }));
+  const handleDelete = (name) => {
+    dispatch(removeData({ name }));
+  };
+  const handleCreate = () => {
+    dispatch(openModal({ type: "create" }));
   };
 
   const columns = [
@@ -39,13 +42,17 @@ const Data = () => {
             <div>
               {record.editions &&
                 record.editions.map((i) => (
-                  <Tag key={i.url} color="blue" style={{ margin: ".3rem" }}>
+                  <Tag
+                    key={i.name + i.url}
+                    color="blue"
+                    style={{ margin: ".3rem" }}
+                  >
                     <a href={i.url}>{`${i.name} ${i["ig-version"]}`}</a>
                   </Tag>
                 ))}
               {record.implementations &&
                 record.implementations.map((i) => (
-                  <Tag key={i.name} color="magenta">
+                  <Tag key={i.name + i.url} color="magenta">
                     <a href={i.url}>{i.name}</a>
                   </Tag>
                 ))}
@@ -81,7 +88,7 @@ const Data = () => {
           <Button primary onClick={() => handleEdit(record)}>
             編輯
           </Button>
-          <Button danger onClick={() => handleDelete(record.id)}>
+          <Button danger onClick={() => handleDelete(record.name)}>
             刪除
           </Button>
         </Space>
@@ -90,6 +97,8 @@ const Data = () => {
   ];
   return (
     <div>
+      <SearchBar />
+      <Button onClick={handleCreate}>New</Button>
       <CustomTable data={data} columns={columns} />
     </div>
   );

@@ -463,8 +463,8 @@ const dataSlice = createSlice({
       return [...state, data];
     },
     removeData: (state, action) => {
-      const { id } = action.payload;
-      return state.filter((s) => s.id !== id);
+      const { name } = action.payload;
+      return state.filter((s) => s.name !== name);
     },
     editData: (state, action) => {
       const { data } = action.payload;
