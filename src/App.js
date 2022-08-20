@@ -4,7 +4,7 @@ import { HashRouter } from "react-router-dom";
 import PageLayout from "./Components/PageLayout";
 import Store from "./Redux/Store";
 
-function App() {
+const App = () => {
   return (
     <HashRouter>
       <Provider store={Store}>
@@ -12,6 +12,6 @@ function App() {
       </Provider>
     </HashRouter>
   );
-}
+};
 
 export default App;
