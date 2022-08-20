@@ -2,26 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { Space, Table, Tag, Button, message, Input } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
+import Cookies from "universal-cookie";
 import { deleteUser } from "./../Axios/user.js";
 import { getUsers } from "../Axios/user.js";
 import RegisterUser from "../Components/RegisterUser";
 import EditUser from "../Components/EditUser";
 
-const User = () => {
-    const [users, setUsers] = useState([
-        // {
-        //     _id: "32EE08BB-752E-478D-A27D-E46DC01ECF87",
-        //     username: "root",
-        //     email: "root@mail.com",
-        //     firstName: "USER",
-        //     lastName: "ROOT",
-        //     userType: "admin",
-        //     status: true,
-        //     _createTime: "2022-08-17T14:58:59.370Z",
-        //     _updaterId: null,
-        //     _upTime: null,
-        // },
-    ]);
+const AdminUser = () => {
+    const [users, setUsers] = useState([]);
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
     const searchInput = useRef(null);
@@ -251,6 +239,27 @@ const User = () => {
             <RegisterUser users={users} setUsers={setUsers} />
             <Table columns={columns} dataSource={users} style={style} />
         </div>
+    );
+};
+
+const NotAdminUser = () => {
+    return (
+        <div>
+            <h1>您沒有權限</h1>
+        </div>
+    );
+};
+
+const User = () => {
+    const [isAdminUser, setisAdminUser] = useState("");
+
+    useEffect(() => {
+        const cookies = new Cookies();
+        console.log(cookies.get("user"));
+        setisAdminUser(cookies.get("user").userType);
+    }, []);
+    return (
+        <div>{isAdminUser === "admin" ? <AdminUser /> : <NotAdminUser />}</div>
     );
 };
 

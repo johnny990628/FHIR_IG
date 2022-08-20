@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "antd/dist/antd.css";
-import { Space, Table, Tag, Button, Modal,Input,message } from "antd";
+import { Space, Table, Tag, Button, Modal, Input, message } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import { getUsers, deleteUser, putUser } from "../../Axios/user";
@@ -18,7 +18,7 @@ const RegisterUser = (props) => {
 
     const success = () => {
         message.success("認證成功");
-    }; 
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -132,7 +132,6 @@ const RegisterUser = (props) => {
             ),
     });
 
-
     const columns = [
         {
             title: "username",
@@ -201,7 +200,7 @@ const RegisterUser = (props) => {
                             onClick={async () => {
                                 await deleteUser(record._id);
                                 deletenotstatususer(record._id);
-                                deletemessage()
+                                deletemessage();
                             }}
                         >
                             Delete
@@ -244,14 +243,9 @@ const RegisterUser = (props) => {
     };
 
     const addUser = (user) => {
-        user._createTime=new Date()
-        console.log("adduser")
+        user._createTime = new Date();
+        console.log("adduser");
         props.setUsers((puser = props.users) => [...puser, user]);
-    };
-
-    const style = {
-        margin: "0px auto ",
-        width: "100%",
     };
 
     return (
@@ -279,7 +273,6 @@ const RegisterUser = (props) => {
                 <Table
                     columns={columns}
                     dataSource={notstatususer}
-                    style={style}
                 />
             </Modal>
         </div>
