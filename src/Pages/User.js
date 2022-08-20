@@ -42,19 +42,19 @@ const User = () => {
             title: "username",
             dataIndex: "username",
             key: "username",
-            render: (text) => <a>{text}</a>,
+            render: (text) => <text>{text}</text>,
         },
         {
             title: "FirstName",
             dataIndex: "firstName",
             key: "firstName",
-            render: (text) => <a>{text}</a>,
+            render: (text) => <text>{text}</text>,
         },
         {
             title: "LastName",
             dataIndex: "lastName",
             key: "lastName",
-            render: (text) => <a>{text}</a>,
+            render: (text) => <text>{text}</text>,
         },
         {
             title: "_createTime",
