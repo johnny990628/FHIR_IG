@@ -8,7 +8,8 @@ const EditUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [user, setUser] = useState({});
     const [password, setPassword] = useState("");
-    //const [admin, setAdmin] = useState(false);
+    const [admin, setAdmin] = useState(false);
+    const [adminDisabled, setAdminDisabled] = useState(false);
 
     useEffect(() => {
         const data = {};
@@ -17,9 +18,10 @@ const EditUser = (props) => {
         data.lastName = props.record.lastName;
         data.email = props.record.email;
         data.username = props.record.username;
-        // if (props.record.userType === "admin") {
-        //     setAdmin(true);
-        // }
+        if (props.record.userType === "admin") {
+            setAdmin(true);
+            setAdminDisabled(true);
+        }
         setUser(data);
     }, []);
 
@@ -39,11 +41,11 @@ const EditUser = (props) => {
         if (password.trim() !== "") {
             user.password;
         }
-        // if (admin) {
-        //     user.userType = "admin";
-        // } else {
-        //     user.userType = "normal";
-        // }
+        if (admin) {
+            user.userType = "admin";
+        } else {
+            user.userType = "normal";
+        }
         const data = [];
         props.users.map((item) => {
             if (item._id === user._id) {
@@ -53,7 +55,6 @@ const EditUser = (props) => {
             }
         });
         props.setUsers(data);
-        //props.setUsers(putData);
         putUser(user);
         success();
         setIsModalVisible(false);
@@ -66,12 +67,12 @@ const EditUser = (props) => {
         data.lastName = props.record.lastName;
         data.email = props.record.email;
         data.username = props.record.username;
-        // if (props.record.userType === "admin") {
-        //     setAdmin(true);
-        // }
+        if (props.record.userType === "admin") {
+            setAdmin(true);
+        }
         setUser(data);
-        // props.setUsers()
-        error()
+        //props.setUsers()
+        error();
         setIsModalVisible(false);
     };
 
@@ -135,15 +136,16 @@ const EditUser = (props) => {
                         style={Inputstyle}
                     />
                 </p>
-                {/*  <Checkbox
+                <Checkbox
                     style={Inputstyle}
                     checked={admin}
+                    disabled={adminDisabled}
                     onChange={(e) => {
                         setAdmin(e.target.checked);
                     }}
                 >
                     管理者Admin
-                </Checkbox>*/}
+                </Checkbox>
 
                 <p>
                     密碼：
