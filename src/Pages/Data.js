@@ -86,10 +86,10 @@ const Data = () => {
       render: (_, record) => (
         <Space>
           <Button primary onClick={() => handleEdit(record)}>
-            編輯
+            Edit
           </Button>
           <Button danger onClick={() => handleDelete(record.name)}>
-            刪除
+            Delete
           </Button>
         </Space>
       ),

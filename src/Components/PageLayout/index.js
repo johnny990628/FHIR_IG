@@ -8,7 +8,7 @@ const PageLayout = () => {
   const { Header, Content } = Layout;
 
   return (
-    <Layout style={{ width: "100vw", height: "100vh" }}>
+    <Layout style={{ width: "100vw", height: "100vh", overflowX: "hidden" }}>
       <Header style={{ padding: 0 }}>
         <CustomHeader />
       </Header>

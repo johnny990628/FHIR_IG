@@ -76,7 +76,7 @@ const SearchBar = () => {
     <div
       style={{
         display: "flex",
-        padding: "4rem",
+        padding: "3rem",
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -113,7 +113,7 @@ const SearchBar = () => {
           }}
         >
           <Button type="primary" htmlType="submit">
-            Submit
+            Search
           </Button>
         </Form.Item>
       </Form>
