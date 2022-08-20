@@ -39,6 +39,12 @@ const User = () => {
 
     const columns = [
         {
+            title: "username",
+            dataIndex: "username",
+            key: "username",
+            render: (text) => <a>{text}</a>,
+        },
+        {
             title: "FirstName",
             dataIndex: "firstName",
             key: "firstName",
@@ -51,9 +57,34 @@ const User = () => {
             render: (text) => <a>{text}</a>,
         },
         {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
+            title: "_createTime",
+            dataIndex: "_createTime",
+            key: "_createTime",
+            render: (text,user) => {
+                var date = new Date(user._createTime);
+                return (
+                    <text>
+                        {date.getFullYear()}-{date.getMonth()}-{date.getDay()}
+                    </text>
+                );
+            },
+        },
+        {
+            title: "userType",
+            dataIndex: "userType",
+            key: "userType",
+            filters: [
+                {
+                    text: "admin",
+                    value: "admin",
+                },
+                {
+                    text: "normal",
+                    value: "normal",
+                },
+            ],
+            filterMode: "tree",
+            onFilter: (value, record) => record.userType.startsWith(value),
         },
         {
             title: "Action",
