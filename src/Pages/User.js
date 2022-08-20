@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Space, Table, Tag, Button } from "antd";
+import { Space, Table, Tag, Button, message } from "antd";
 import { deleteUser } from "./../Axios/user.js";
 import { getUsers } from "../Axios/user.js";
 import RegisterUser from "../Components/RegisterUser";
@@ -33,6 +33,10 @@ const User = () => {
         fetchData();
     }, []);
 
+    const deletemessage = (username) => {
+        message.success(`${username}修改成功`);
+    };
+
     const columns = [
         {
             title: "FirstName",
@@ -56,13 +60,19 @@ const User = () => {
             key: "action",
             render: (_, record) => (
                 <>
-                    <EditUser record={record} users={users} setUsers={setUsers} />
-                    <Button danger 
+                    <EditUser
+                        record={record}
+                        users={users}
+                        setUsers={setUsers}
+                    />
+                    <Button
+                        danger
                         type="text"
-                        style={{marginLeft: "5px"}}
+                        style={{ marginLeft: "5px" }}
                         onClick={async () => {
                             await deleteUser(record._id);
                             deletenotstatususer(record._id);
+                            deletemessage(record.username);
                         }}
                     >
                         刪除

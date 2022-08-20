@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Button, Modal } from "antd";
 import { putUser } from "../../Axios/user";
-import { Input, Checkbox } from "antd";
+import { Input, Checkbox, message } from "antd";
 
 const EditUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -22,6 +22,14 @@ const EditUser = (props) => {
         // }
         setUser(data);
     }, []);
+
+    const success = () => {
+        message.success("修改成功");
+    };
+
+    const error = () => {
+        message.error("取消修改");
+    };
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -47,6 +55,7 @@ const EditUser = (props) => {
         props.setUsers(data);
         //props.setUsers(putData);
         putUser(user);
+        success();
         setIsModalVisible(false);
     };
 
@@ -62,6 +71,7 @@ const EditUser = (props) => {
         // }
         setUser(data);
         // props.setUsers()
+        error()
         setIsModalVisible(false);
     };
 
