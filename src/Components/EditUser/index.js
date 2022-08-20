@@ -36,6 +36,16 @@ const EditUser = (props) => {
         // } else {
         //     user.userType = "normal";
         // }
+        const data = [];
+        props.users.map((item) => {
+            if (item._id === user._id) {
+                data.push(user);
+            } else {
+                data.push(item);
+            }
+        });
+        props.setUsers(data);
+        //props.setUsers(putData);
         putUser(user);
         setIsModalVisible(false);
     };
@@ -51,6 +61,7 @@ const EditUser = (props) => {
         //     setAdmin(true);
         // }
         setUser(data);
+        // props.setUsers()
         setIsModalVisible(false);
     };
 

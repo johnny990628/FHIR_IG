@@ -56,7 +56,7 @@ const User = () => {
             key: "action",
             render: (_, record) => (
                 <>
-                    <EditUser record={record} />
+                    <EditUser record={record} users={users} setUsers={setUsers} />
                     <Button danger 
                         type="text"
                         style={{marginLeft: "5px"}}
