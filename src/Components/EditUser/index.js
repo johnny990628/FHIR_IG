@@ -49,9 +49,27 @@ const EditUser = (props) => {
                     data.push(item);
                 }
             });
-            props.setUsers(data);
-            putUser(user)
-            success();
+
+            if (props.record.username === user.username) {
+                props.setUsers(data);
+                putUser(user);
+                success();
+            } else {
+                var sum = 0;
+                props.users.map((item) => {
+                    if (item.username === user.username) {
+                        sum++;
+                    }
+                });
+                if (sum > 0) {
+                    message.error("用戶名已存在");
+                    user.username = props.record.username;
+                } else {
+                    props.setUsers(data);
+                    putUser(user);
+                    success();
+                }
+            }
         }
         setIsModalVisible(false);
     };
