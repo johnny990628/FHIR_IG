@@ -34,7 +34,6 @@ export const putUser = async (user) => {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                userType: user.userType,
                 status: user.status,
                 _createTime: user._createTime,
                 _updaterId: user._updaterId, //admin name

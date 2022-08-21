@@ -8,8 +8,6 @@ const EditUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [user, setUser] = useState({});
     const [password, setPassword] = useState("");
-    const [admin, setAdmin] = useState(false);
-    const [adminDisabled, setAdminDisabled] = useState(false);
 
     useEffect(() => {
         const data = {};
@@ -19,11 +17,8 @@ const EditUser = (props) => {
         data.email = props.record.email;
         data.username = props.record.username;
         data._createTime = props.record._createTime;
+        data.userType = props.record.userType;
 
-        if (props.record.userType === "admin") {
-            setAdmin(true);
-            setAdminDisabled(true);
-        }
         setUser(data);
     }, []);
 
@@ -42,11 +37,6 @@ const EditUser = (props) => {
     const handleOk = () => {
         if (password.trim() !== "") {
             user.password;
-        }
-        if (admin) {
-            user.userType = "admin";
-        } else {
-            user.userType = "normal";
         }
         const data = [];
         props.users.map((item) => {
@@ -69,9 +59,6 @@ const EditUser = (props) => {
         data.lastName = props.record.lastName;
         data.email = props.record.email;
         data.username = props.record.username;
-        if (props.record.userType === "admin") {
-            setAdmin(true);
-        }
         setUser(data);
         //props.setUsers()
         error();
@@ -85,7 +72,11 @@ const EditUser = (props) => {
 
     return (
         <>
-            <Button type="primary" onClick={showModal}>
+            <Button
+                type="primary"
+                onClick={showModal}
+                disabled={props.record.userType === "admin"}
+            >
                 編輯
             </Button>
             <Modal
@@ -138,17 +129,6 @@ const EditUser = (props) => {
                         style={Inputstyle}
                     />
                 </p>
-                <Checkbox
-                    style={Inputstyle}
-                    checked={admin}
-                    disabled={adminDisabled}
-                    onChange={(e) => {
-                        setAdmin(e.target.checked);
-                    }}
-                >
-                    管理者Admin
-                </Checkbox>
-
                 <p>
                     密碼：
                     <Input
