@@ -35,33 +35,40 @@ const EditUser = (props) => {
     };
 
     const handleOk = () => {
-        if (password.trim() !== "") {
-            user.password;
-        }
-        const data = [];
-        props.users.map((item) => {
-            if (item._id === user._id) {
-                data.push(user);
-            } else {
-                data.push(item);
+        if (props.record.userType === "admin") {
+            message.success("關閉檢視");
+        } else {
+            if (password.trim() !== "") {
+                user.password;
             }
-        });
-        props.setUsers(data);
-        putUser(user);
-        success();
+            const data = [];
+            props.users.map((item) => {
+                if (item._id === user._id) {
+                    data.push(user);
+                } else {
+                    data.push(item);
+                }
+            });
+            props.setUsers(data);
+            putUser(user)
+            success();
+        }
         setIsModalVisible(false);
     };
 
     const handleCancel = () => {
-        const data = {};
-        data._id = user._id;
-        data.firstName = props.record.firstName;
-        data.lastName = props.record.lastName;
-        data.email = props.record.email;
-        data.username = props.record.username;
-        setUser(data);
-        //props.setUsers()
-        error();
+        if (props.record.userType === "admin") {
+            message.success("關閉檢視");
+        } else {
+            const data = {};
+            data._id = user._id;
+            data.firstName = props.record.firstName;
+            data.lastName = props.record.lastName;
+            data.email = props.record.email;
+            data.username = props.record.username;
+            setUser(data);
+            error();
+        }
         setIsModalVisible(false);
     };
 
@@ -70,76 +77,104 @@ const EditUser = (props) => {
         width: "70%",
     };
 
+    const ModalAdmonRender = () => {
+        return (
+            <>
+                <p>姓名：{user.firstName}</p>
+                <p>名稱：{user.lastName}</p>
+                <p>信箱：{user.email}</p>
+                <p>帳號：{user.username}</p>
+            </>
+        );
+    };
+
     return (
         <>
-            <Button
-                type="primary"
-                onClick={showModal}
-                disabled={props.record.userType === "admin"}
-            >
-                編輯
-            </Button>
+            {props.record.userType === "admin" ? (
+                <Button type="primary" onClick={showModal}>
+                    檢視
+                </Button>
+            ) : (
+                <Button type="primary" onClick={showModal}>
+                    編輯
+                </Button>
+            )}
             <Modal
-                title="Basic Modal"
+                title="檢視/編輯"
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
             >
-                <p>
-                    姓名：
-                    <Input
-                        placeholder="姓氏"
-                        value={user.firstName}
-                        onChange={(e) => {
-                            setUser({ ...user, firstName: e.target.value });
-                        }}
-                        style={Inputstyle}
-                    />
-                </p>
-                <p>
-                    名稱：
-                    <Input
-                        placeholder="名稱"
-                        value={user.lastName}
-                        onChange={(e) => {
-                            setUser({ ...user, lastName: e.target.value });
-                        }}
-                        style={Inputstyle}
-                    />
-                </p>
-                <p>
-                    信箱：
-                    <Input
-                        placeholder="信箱"
-                        value={user.email}
-                        onChange={(e) => {
-                            setUser({ ...user, email: e.target.value });
-                        }}
-                        style={Inputstyle}
-                    />
-                </p>
-                <p>
-                    帳號：
-                    <Input
-                        placeholder="帳號"
-                        value={user.username}
-                        onChange={(e) => {
-                            setUser({ ...user, username: e.target.value });
-                        }}
-                        style={Inputstyle}
-                    />
-                </p>
-                <p>
-                    密碼：
-                    <Input
-                        placeholder="密碼"
-                        value={password}
-                        onChange={(e) => {
-                            setPassword(e.target.value);
-                        }}
-                        style={Inputstyle}
-                    />
-                </p>
+                {props.record.userType === "admin" ? (
+                    <ModalAdmonRender />
+                ) : (
+                    <>
+                        <p>
+                            姓名：
+                            <Input
+                                placeholder="姓氏"
+                                value={user.firstName}
+                                onChange={(e) => {
+                                    setUser({
+                                        ...user,
+                                        firstName: e.target.value,
+                                    });
+                                }}
+                                style={Inputstyle}
+                            />
+                        </p>
+                        <p>
+                            名稱：
+                            <Input
+                                placeholder="名稱"
+                                value={user.lastName}
+                                onChange={(e) => {
+                                    setUser({
+                                        ...user,
+                                        lastName: e.target.value,
+                                    });
+                                }}
+                                style={Inputstyle}
+                            />
+                        </p>
+                        <p>
+                            信箱：
+                            <Input
+                                placeholder="信箱"
+                                value={user.email}
+                                onChange={(e) => {
+                                    setUser({ ...user, email: e.target.value });
+                                }}
+                                style={Inputstyle}
+                            />
+                        </p>
+                        <p>
+                            帳號：
+                            <Input
+                                placeholder="帳號"
+                                value={user.username}
+                                onChange={(e) => {
+                                    setUser({
+                                        ...user,
+                                        username: e.target.value,
+                                    });
+                                }}
+                                style={Inputstyle}
+                            />
+                        </p>
+                        <p>
+                            密碼：
+                            <Input
+                                placeholder="密碼"
+                                value={password}
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                }}
+                                style={Inputstyle}
+                            />
+                        </p>
+                    </>
+                )}
             </Modal>
         </>
     );
