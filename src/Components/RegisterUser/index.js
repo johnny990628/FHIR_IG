@@ -1,23 +1,156 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "antd/dist/antd.css";
-import { Space, Table, Tag, Button, Modal } from "antd";
+import { Space, Table, Tag, Button, Modal, Input, message } from "antd";
+import Highlighter from "react-highlight-words";
+import { SearchOutlined } from "@ant-design/icons";
 import { getUsers, deleteUser, putUser } from "../../Axios/user";
 
 const RegisterUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [notstatususer, setNotstatususer] = useState([]);
+    const [searchText, setSearchText] = useState("");
+    const [searchedColumn, setSearchedColumn] = useState("");
+    const searchInput = useRef(null);
+
+    const deletemessage = () => {
+        message.success(`刪除成功`);
+    };
+
+    const success = () => {
+        message.success("認證成功");
+    };
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText("");
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({
+            setSelectedKeys,
+            selectedKeys,
+            confirm,
+            clearFilters,
+        }) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) =>
+                        setSelectedKeys(e.target.value ? [e.target.value] : [])
+                    }
+                    onPressEnter={() =>
+                        handleSearch(selectedKeys, confirm, dataIndex)
+                    }
+                    style={{
+                        marginBottom: 8,
+                        display: "block",
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() =>
+                            handleSearch(selectedKeys, confirm, dataIndex)
+                        }
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() =>
+                            clearFilters && handleReset(clearFilters)
+                        }
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? "#1890ff" : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]
+                .toString()
+                .toLowerCase()
+                .includes(value.toLowerCase()),
+        onFilterDropdownVisibleChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: "#ffc069",
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ""}
+                />
+            ) : (
+                text
+            ),
+    });
+
     const columns = [
+        {
+            title: "username",
+            dataIndex: "username",
+            key: "username",
+            ...getColumnSearchProps("username"),
+            render: (text) => <text>{text}</text>,
+        },
         {
             title: "FirstName",
             dataIndex: "firstName",
             key: "firstName",
-            render: (text) => <p>{text}</p>,
+            render: (text) => <text>{text}</text>,
         },
         {
             title: "LastName",
             dataIndex: "lastName",
             key: "lastName",
-            render: (text) => <p>{text}</p>,
+            render: (text) => <text>{text}</text>,
         },
         {
             title: "Email",
@@ -26,17 +159,21 @@ const RegisterUser = (props) => {
             render: (text) => <p>{text}</p>,
         },
         {
-            title: "CreateTime",
+            title: "_createTime",
             dataIndex: "_createTime",
-            key: "createTime",
-            render: (text) => {
-                {
-                    var date = new Date(text);
-                }
+            key: "_createTime",
+            sorter: (a, b) => {
+                var aTime = new Date(a._createTime);
+                var bTime = new Date(b._createTime);
+                return aTime.getTime() - bTime.getTime();
+            },
+            render: (text, user) => {
+                var date = new Date(user._createTime);
+                date.setHours(date.getHours() - 8);
                 return (
-                    <p>{`${date.getFullYear()}-${
+                    <text>{`${date.getFullYear()}/${
                         date.getMonth() + 1
-                    }-${date.getDate()}_${date.getHours()}:${date.getMinutes()}`}</p>
+                    }/${date.getDate()}_${date.getHours()}:${date.getMinutes()}`}</text>
                 );
             },
         },
@@ -53,6 +190,7 @@ const RegisterUser = (props) => {
                                 await putUser(record);
                                 deletenotstatususer(record._id);
                                 addUser(record);
+                                success();
                             }}
                         >
                             認可
@@ -62,6 +200,7 @@ const RegisterUser = (props) => {
                             onClick={async () => {
                                 await deleteUser(record._id);
                                 deletenotstatususer(record._id);
+                                deletemessage();
                             }}
                         >
                             Delete
@@ -71,6 +210,7 @@ const RegisterUser = (props) => {
             ),
         },
     ];
+
     const deletenotstatususer = (id) => {
         setNotstatususer(notstatususer.filter((user) => user._id !== id));
     };
@@ -103,13 +243,9 @@ const RegisterUser = (props) => {
     };
 
     const addUser = (user) => {
-        console.log("adduser")
+        user._createTime = new Date();
+        console.log("adduser");
         props.setUsers((puser = props.users) => [...puser, user]);
-    };
-
-    const style = {
-        margin: "0px auto ",
-        width: "100%",
     };
 
     return (
@@ -137,7 +273,6 @@ const RegisterUser = (props) => {
                 <Table
                     columns={columns}
                     dataSource={notstatususer}
-                    style={style}
                 />
             </Modal>
         </div>
