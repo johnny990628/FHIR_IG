@@ -10,7 +10,7 @@ const initialState = {
     description: "",
     authority: "",
     country: "",
-    language: [],
+    language: ["en"],
     implementations: [],
     history: "",
     canonical: "",
@@ -44,42 +44,48 @@ const modalSlice = createSlice({
       return initialState;
     },
     switchForm: (state, action) => {
-      const { tag, tagData } = action.payload;
+      const { tag } = action.payload;
       return {
         ...state,
         tag,
-        tagData,
+      };
+    },
+    updateFormData: (state, action) => {
+      const { data } = action.payload;
+      return {
+        ...state,
+        data: { ...state.data, ...data },
       };
     },
     createTagData: (state, action) => {
-      const { data } = action.payload;
+      const { tagType, data } = action.payload;
       return {
         ...state,
         data: {
           ...state.data,
-          [state.tag]: [...state.data[state.tag], data],
+          [tagType]: [...state.data[tagType], data],
         },
       };
     },
     updateTagData: (state, action) => {
-      const { data, index } = action.payload;
+      const { tagType, data, index } = action.payload;
       return {
         ...state,
         data: {
           ...state.data,
-          [state.tag]: state.data[state.tag].map((tag, i) =>
+          [tagType]: state.data[tagType].map((tag, i) =>
             i === index ? data : tag
           ),
         },
       };
     },
     deleteTagData: (state, action) => {
-      const { index } = action.payload;
+      const { tagType, index } = action.payload;
       return {
         ...state,
         data: {
           ...state.data,
-          [state.tag]: state.data[state.tag].filter((_, i) => i !== index),
+          [tagType]: state.data[tagType].filter((_, i) => i !== index),
         },
       };
     },
@@ -93,6 +99,7 @@ export const {
   createTagData,
   updateTagData,
   deleteTagData,
+  updateFormData,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

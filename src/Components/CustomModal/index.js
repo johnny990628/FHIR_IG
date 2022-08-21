@@ -3,13 +3,10 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomForm from "../CustomForm";
 import { closeModal, switchForm } from "../../Redux/Slices/Modal";
-import TagForm from "../TagForm";
 
 const CustomModal = () => {
   const dispatch = useDispatch();
-  const { isOpen, type, tag, tagData, data } = useSelector(
-    (state) => state.modal
-  );
+  const { isOpen, type, tag } = useSelector((state) => state.modal);
 
   const handleOk = () => {
     dispatch(closeModal());
@@ -20,7 +17,7 @@ const CustomModal = () => {
   };
 
   const handleBack = () => {
-    dispatch(switchForm({ tag: "", tagData: [] }));
+    dispatch(switchForm({ tag: "" }));
   };
 
   const ModalTitle = () => {
@@ -37,7 +34,7 @@ const CustomModal = () => {
       // bodyStyle={{ height: "60vh" }}
       width={800}
     >
-      {tag ? <TagForm type={tag} data={data[tag]} /> : <CustomForm />}
+      <CustomForm />
     </Modal>
   );
 };

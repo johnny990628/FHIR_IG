@@ -47,7 +47,10 @@ const Data = () => {
                     color="blue"
                     style={{ margin: ".3rem" }}
                   >
-                    <a href={i.url}>{`${i.name} ${i["ig-version"]}`}</a>
+                    <a href={i.url}>
+                      {i.name}
+                      {i["ig-version"] && ` ( ${i["ig-version"]} )`}
+                    </a>
                   </Tag>
                 ))}
               {record.implementations &&

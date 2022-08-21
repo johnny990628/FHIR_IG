@@ -3,20 +3,15 @@ import { Provider } from "react-redux";
 import { HashRouter } from "react-router-dom";
 import PageLayout from "./Components/PageLayout";
 import Store from "./Redux/Store";
-import axios from "axios";
-import congig from "./config.json";
 import Cookies from "universal-cookie";
+import { apiLogin } from "./Axios/auth";
 
 function App() {
   const [user, setUser] = useState();
   useEffect(() => {
-    axios
-      .post(`${congig.apiURL}/login`, {
-        username: "root",
-        password: "Admin1234",
-      })
-      .then((response) => setUser(response.data))
-      .catch((error) => console.log(error));
+    apiLogin({ username: "admin", password: "Password1234" }).then((res) =>
+      setUser(res.data)
+    );
   }, []);
 
   useEffect(() => {

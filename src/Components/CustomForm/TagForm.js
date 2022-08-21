@@ -4,20 +4,30 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createTagData,
   deleteTagData,
+  updateFormData,
   updateTagData,
 } from "../../Redux/Slices/Modal";
 
-const TagForm = ({ type, data }) => {
+const TagForm = ({ type, form }) => {
+  const [tags, setTags] = useState(form.getFieldValue(type));
   const [editIndex, setEditIndex] = useState(null);
   const [editingData, setEditingData] = useState({});
   const [creatingData, setCreatingData] = useState({});
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    form.setFieldValue(type, tags);
+    dispatch(updateFormData({ data: { [type]: tags } }));
+  }, [tags]);
+
   const handleEdit = (item, index) => {
     if (index === editIndex) {
       setEditIndex(null);
-      dispatch(updateTagData({ data: editingData, index: editIndex }));
+      // dispatch(
+      //   updateTagData({ tagType: type, data: editingData, index: editIndex })
+      // );
+      setTags((tag) => tag.map((t, i) => (i === index ? editingData : t)));
       setEditingData({});
     } else {
       setEditIndex(index);
@@ -25,7 +35,8 @@ const TagForm = ({ type, data }) => {
     }
   };
   const handleDelete = (index) => {
-    dispatch(deleteTagData({ index }));
+    setTags((tag) => tag.filter((_, i) => i !== index));
+    // dispatch(deleteTagData({ tagType: type, index }));
   };
 
   const handleEditOnChange = (field, value) => {
@@ -43,7 +54,8 @@ const TagForm = ({ type, data }) => {
   };
 
   const handleCreate = () => {
-    dispatch(createTagData({ data: creatingData }));
+    setTags((tag) => [...tag, creatingData]);
+    // dispatch(createTagData({ tagType: type, data: creatingData }));
     setCreatingData({});
   };
 
@@ -139,7 +151,7 @@ const TagForm = ({ type, data }) => {
     <div style={{ height: "50vh", overflowY: "auto" }}>
       <List
         size="small"
-        dataSource={data}
+        dataSource={tags}
         footer={
           <List.Item
             actions={[
@@ -199,16 +211,16 @@ const TagForm = ({ type, data }) => {
             ) : (
               <Space direction="vertical">
                 {formModel[type].map((model) => (
-                  <>
+                  <Space key={model.label}>
                     {model.name === "name" ? (
                       <h3>{`${i.name}`}</h3>
                     ) : (
-                      <div key={model.label}>
+                      <div>
                         <Tag color="blue">{model.label}</Tag>
                         {i[model.name] && i[model.name]}
                       </div>
                     )}
-                  </>
+                  </Space>
                 ))}
               </Space>
             )}
