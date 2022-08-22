@@ -1,32 +1,21 @@
-import { Button, Form, Input, Space, Tag } from "antd";
+import { Button, Form, Input, Space } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addData, editData } from "../../Redux/Slices/Data";
-import { closeModal, openModal, switchForm } from "../../Redux/Slices/Modal";
+import { fetchIG } from "../../Redux/Slices/Data";
+
 const SearchBar = () => {
   const [form] = Form.useForm();
 
   const { isOpen, data, type } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    !isOpen && form.resetFields();
-    data && form.setFieldsValue(data);
-  }, [isOpen]);
-
   const onFinish = (formData) => {
-    if (type === "create") {
-      const id = Date.now();
-      dispatch(addData({ data: { ...formData, id } }));
-    }
-    if (type === "edit") {
-      dispatch(editData({ data: { ...formData } }));
-    }
-    dispatch(closeModal());
+    dispatch(fetchIG(formData));
   };
 
-  const handleTagClick = (type, data) => {
-    dispatch(switchForm({ tag: type, tagData: data }));
+  const onReset = () => {
+    form.resetFields();
+    dispatch(fetchIG());
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -35,8 +24,8 @@ const SearchBar = () => {
 
   const formModel = [
     {
-      label: "Search",
-      name: "search",
+      label: "Name",
+      name: "name",
       input: <Input />,
       rules: [],
     },
@@ -76,7 +65,7 @@ const SearchBar = () => {
     <div
       style={{
         display: "flex",
-        padding: "3rem",
+        padding: "1rem",
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -94,18 +83,13 @@ const SearchBar = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        {formModel.map(({ label, name, rules, input, childrens }) => (
-          <Form.Item
-            key={name}
-            label={label}
-            name={name}
-            rules={rules}
-            style={{ padding: ".4rem" }}
-          >
-            {input}
-          </Form.Item>
-        ))}
-
+        <Space>
+          {formModel.map(({ label, name, rules, input, childrens }) => (
+            <Form.Item key={name} label={label} name={name} rules={rules}>
+              {input}
+            </Form.Item>
+          ))}
+        </Space>
         <Form.Item
           wrapperCol={{
             offset: 8,
@@ -114,6 +98,17 @@ const SearchBar = () => {
         >
           <Button type="primary" htmlType="submit">
             Search
+          </Button>
+        </Form.Item>
+
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Button htmlType="button" onClick={onReset}>
+            Reset
           </Button>
         </Form.Item>
       </Form>

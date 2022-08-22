@@ -4,22 +4,14 @@ import {
   Form,
   Input,
   Space,
-  Tag,
-  Tooltip,
   Collapse,
   Switch,
   InputNumber,
 } from "antd";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { addData, editData } from "../../Redux/Slices/Data";
-import {
-  closeModal,
-  openModal,
-  updateFormData,
-  switchForm,
-} from "../../Redux/Slices/Modal";
-import MultipleTags from "./MultipleTags";
-import TagForm from "./TagForm";
+import { createIG, updateIG } from "../../Redux/Slices/Data";
+import { closeModal } from "../../Redux/Slices/Modal";
 
 const CustomForm = () => {
   const { isOpen, data, type, tag } = useSelector((state) => state.modal);
@@ -37,128 +29,64 @@ const CustomForm = () => {
   useEffect(() => {
     if (data) {
       form.setFieldsValue(data);
-      analysisForm.setFieldsValue(data.analysis);
     }
   }, [data]);
 
   const onFinish = (formData) => {
-    const analysisData = analysisForm.getFieldsValue();
-
     if (type === "create") {
-      dispatch(addData({ data: { ...formData, analysis: analysisData } }));
+      // dispatch(addData({ data: { ...formData, analysis: analysisData } }));
+      dispatch(createIG(formData));
     }
     if (type === "edit") {
-      dispatch(editData({ data: { ...formData, analysis: analysisData } }));
+      // dispatch(editData({ data: { ...formData, analysis: analysisData } }));
+      dispatch(
+        updateIG({
+          id: data._id,
+          data: formData,
+        })
+      );
     }
     dispatch(closeModal());
   };
 
-  const handleTagClick = (tagType) => {
-    dispatch(switchForm({ tag: tagType }));
-  };
+  // const handleTagClick = (tagType) => {
+  //   dispatch(switchForm({ tag: tagType }));
+  // };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
-  const CustomCollapse = () => {
+  const CustomCollapse = ({ name, subFields }) => {
     const { Panel } = Collapse;
-    const fields = [
-      {
-        label: "Content",
-        name: "content",
-        input: <Switch />,
-        rules: [],
-      },
-      {
-        label: "Rest",
-        name: "rest",
-        input: <Switch />,
-        rules: [],
-      },
-      {
-        label: "Documents",
-        name: "documents",
-        input: <Switch />,
-        rules: [],
-      },
-      {
-        label: "ClinicalCode",
-        name: "clinicalCode",
-        input: <Switch />,
-        rules: [],
-      },
-      {
-        label: "MedsMgmt",
-        name: "medsMgmt",
-        input: <Switch />,
-        rules: [],
-      },
-      {
-        label: "Profiles",
-        name: "profiles",
-        input: <InputNumber />,
-        rules: [],
-      },
-      {
-        label: "Extensions",
-        name: "extensions",
-        input: <InputNumber />,
-        rules: [],
-      },
-      {
-        label: "Operations",
-        name: "operations",
-        input: <InputNumber />,
-        rules: [],
-      },
-      {
-        label: "Valuesets",
-        name: "valuesets",
-        input: <InputNumber />,
-        rules: [],
-      },
-      {
-        label: "CodeSystems",
-        name: "codeSystems",
-        input: <InputNumber />,
-        rules: [],
-      },
-      {
-        label: "Examples",
-        name: "examples",
-        input: <InputNumber />,
-        rules: [],
-      },
-    ];
+
     return (
-      <Collapse ghost>
-        <Panel header="Analysis" key="1">
-          <Form
-            name="analysis"
-            form={analysisForm}
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 16,
-            }}
-            labelAlign="left"
-          >
-            {fields.map((field) => (
+      <Input.Group>
+        {subFields.map((field) => (
+          <>
+            {field.input.type === "switch" && (
               <Form.Item
                 key={field.name}
                 label={field.label}
-                name={field.name}
-                rules={field.rules}
-                valuePropName={field.input.type["__ANT_SWITCH"] && "checked"}
+                name={[name, field.name]}
+                valuePropName="checked"
               >
-                {field.input}
+                <Switch placeholder={field.label} />
               </Form.Item>
-            ))}
-          </Form>
-        </Panel>
-      </Collapse>
+            )}
+            {field.input.type === "number" && (
+              <Form.Item key={field.name} name={[name, field.name]} noStyle>
+                <InputNumber
+                  style={{
+                    width: "50%",
+                  }}
+                  placeholder={field.label}
+                />
+              </Form.Item>
+            )}
+          </>
+        ))}
+      </Input.Group>
     );
   };
 
@@ -166,263 +94,498 @@ const CustomForm = () => {
     {
       label: "Name",
       name: "name",
-      input: <Input />,
-      rules: [
-        {
-          required: true,
-          message: "Please input name !",
-        },
-      ],
+      input: {
+        type: "text",
+        placeholder: "Name",
+        rules: [
+          {
+            required: true,
+            message: "Please input name !",
+          },
+        ],
+      },
     },
     {
       label: "Category",
       name: "category",
-      input: <Input />,
-      rules: [
-        {
-          required: true,
-          message: "Please input category !",
-        },
-      ],
+      input: {
+        type: "text",
+        placeholder: "Category",
+        rules: [
+          {
+            required: true,
+            message: "Please input category !",
+          },
+        ],
+      },
     },
     {
       label: "Description",
       name: "description",
-      input: <Input />,
-      rules: [
-        {
-          required: true,
-          message: "Please input description !",
-        },
-      ],
+      input: {
+        type: "text",
+        placeholder: "Description",
+        rules: [
+          {
+            required: true,
+            message: "Please input description !",
+          },
+        ],
+      },
     },
     {
       label: "Authority",
       name: "authority",
-      input: <Input />,
-      rules: [
-        {
-          required: true,
-          message: "Please input authority !",
-        },
-      ],
+      input: {
+        type: "text",
+        placeholder: "Authority",
+        rules: [
+          {
+            required: true,
+            message: "Please input authority !",
+          },
+        ],
+      },
     },
     {
       label: "Country",
       name: "country",
-      input: <Input />,
-      rules: [
-        {
-          required: true,
-          message: "Please input country !",
-        },
-      ],
+      input: {
+        type: "text",
+        placeholder: "Country",
+        props: { showCount: true, maxLength: 2 },
+        rules: [
+          {
+            required: true,
+            message: "Please input authority !",
+          },
+        ],
+      },
     },
     {
       label: "Npm-Name",
       name: "npm-name",
-      input: <Input />,
-      rules: [],
+      input: {
+        type: "text",
+        placeholder: "Npm-Name",
+        rules: [],
+      },
     },
     {
       label: "History",
       name: "history",
-      input: <Input />,
-      rules: [],
+      input: {
+        type: "text",
+        placeholder: "History",
+        rules: [],
+      },
     },
     {
       label: "CI_Build",
       name: "ci-build",
-      input: <Input />,
-      rules: [],
+      input: {
+        type: "text",
+        placeholder: "CI_Build",
+        rules: [],
+      },
     },
     {
       label: "Canonical",
       name: "canonical",
-      input: <Input />,
-      rules: [],
+      input: {
+        type: "text",
+        placeholder: "Canonical",
+        rules: [],
+      },
     },
     {
       label: "Language",
       name: "language",
-      input: <MultipleTags type="language" />,
-      rules: [],
+      input: {
+        type: "dynamic",
+        placeholder: "Language",
+        props: { name: "language", label: "Language" },
+        rules: [],
+      },
     },
     {
       label: "Editions",
       name: "editions",
-      input: <></>,
-      childrens: [
-        {
-          label: "Name",
-          name: "editions[0].name",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input editions-name !",
+      input: {
+        type: "dynamicNest",
+        placeholder: "Editions",
+        props: { name: "editions" },
+        rules: [],
+        subFields: [
+          {
+            label: "Name",
+            name: "name",
+            input: {
+              type: "text",
+              placeholder: "Name",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input editions-name !",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "IG-Version",
-          name: "ig-version",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input editions-ig-version !",
+          },
+          {
+            label: "IG-Version",
+            name: "ig-version",
+            input: {
+              type: "text",
+              placeholder: "IG-Version",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input ig-version !",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "Package",
-          name: "package",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input editions-package !",
+          },
+          {
+            label: "FHIR-Version",
+            name: "fhir-version",
+            input: {
+              type: "text",
+              placeholder: "FHIR-Version",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input fhir-version !",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "URL",
-          name: "editions[0].url",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input editions-URL !",
-              rules: [],
+          },
+          {
+            label: "Package",
+            name: "package",
+            input: {
+              type: "text",
+              placeholder: "Package",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input package !",
+                },
+              ],
             },
-          ],
-        },
-      ],
+          },
+          {
+            label: "URL",
+            name: "url",
+            input: {
+              type: "text",
+              placeholder: "URL",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input url !",
+                },
+              ],
+            },
+          },
+        ],
+      },
     },
-
     {
       label: "Implementations",
       name: "implementations",
-      input: <></>,
-      childrens: [
-        {
-          label: "Name",
-          name: "implementations[0].name",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input implementations-Name !",
-              rules: [],
+      input: {
+        type: "dynamicNest",
+        placeholder: "Editions",
+        props: { name: "implementations" },
+        rules: [],
+        subFields: [
+          {
+            label: "Name",
+            name: "name",
+            input: {
+              type: "text",
+              placeholder: "Name",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input name !",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "Type",
-          name: "type",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input implementations-Type !",
-              rules: [],
+          },
+          {
+            label: "Type",
+            name: "type",
+            input: {
+              type: "text",
+              placeholder: "Type",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input type !",
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: "URL",
-          name: "implementations[0].url",
-          input: <Input />,
-          rules: [
-            {
-              required: true,
-              message: "Please input implementations-Url !",
-              rules: [],
+          },
+          {
+            label: "URL",
+            name: "url",
+            input: {
+              type: "text",
+              placeholder: "URL",
+              rules: [
+                {
+                  required: true,
+                  message: "Please input url !",
+                },
+              ],
             },
-          ],
-        },
-      ],
+          },
+        ],
+      },
     },
     {
       label: "Analysis",
       name: "analysis",
-      input: <CustomCollapse />,
-      rules: [],
+      input: {
+        type: "collapse",
+        placeholder: "Analysis",
+        props: { name: "analysis" },
+        rules: [],
+        subFields: [
+          {
+            label: "Content",
+            name: "content",
+            input: {
+              type: "switch",
+              rules: [],
+            },
+          },
+          {
+            label: "Rest",
+            name: "rest",
+            input: {
+              type: "switch",
+              rules: [],
+            },
+          },
+          {
+            label: "Documents",
+            name: "documents",
+            input: {
+              type: "switch",
+              rules: [],
+            },
+          },
+          {
+            label: "ClinicalCode",
+            name: "clinicalCode",
+            input: {
+              type: "switch",
+              rules: [],
+            },
+          },
+          {
+            label: "MedsMgmt",
+            name: "medsMgmt",
+            input: {
+              type: "switch",
+              rules: [],
+            },
+          },
+          {
+            label: "Profiles",
+            name: "profiles",
+            input: {
+              type: "number",
+              rules: [],
+            },
+          },
+          {
+            label: "Extensions",
+            name: "extensions",
+            input: {
+              type: "number",
+              rules: [],
+            },
+          },
+          {
+            label: "Operations",
+            name: "operations",
+            input: {
+              type: "number",
+              rules: [],
+            },
+          },
+          {
+            label: "Valuesets",
+            name: "valuesets",
+            input: {
+              type: "number",
+              rules: [],
+            },
+          },
+          {
+            label: "CodeSystems",
+            name: "codeSystems",
+            input: {
+              type: "number",
+              rules: [],
+            },
+          },
+          {
+            label: "Examples",
+            name: "examples",
+            input: {
+              type: "number",
+              rules: [],
+            },
+          },
+        ],
+      },
     },
   ];
 
-  const TagTootip = ({ item }) => {
+  const DynamicForm = ({ label, name }) => {
     return (
-      <div>
-        {Object.entries(item).map(([key, value]) => (
-          <div key={key}>{`${key} : ${value}`}</div>
-        ))}
-      </div>
-    );
-  };
+      <Form.List label={label} name={name}>
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map((field, index) => (
+              <Form.Item required={false} key={field.key}>
+                <Form.Item
+                  {...field}
+                  validateTrigger={["onChange", "onBlur"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please fill or delete this field.",
+                    },
+                  ]}
+                  noStyle
+                >
+                  <Input
+                    style={{
+                      width: "60%",
+                    }}
+                    placeholder={label}
+                  />
+                </Form.Item>
 
-  const IGForm = () => {
-    return (
-      <Form
-        name="ig"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        form={form}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        {formModel.map(({ label, name, rules, input, childrens }) =>
-          name === "implementations" || name === "editions" ? (
-            <Form.Item key={name} label={label} name={name} rules={rules}>
-              <Space direction="vertical">
-                <Button onClick={() => handleTagClick(name)}>
-                  Edit {label}
-                </Button>
-                <div>
-                  {data[name] &&
-                    data[name].map((i) => (
-                      <Tooltip
-                        key={i.name + i["ig-version"]}
-                        placement="top"
-                        title={<TagTootip item={i} />}
-                      >
-                        <Tag style={{ marginBottom: ".5rem" }}>
-                          {i.name}
-                          {i["ig-version"] && i["ig-version"]}
-                        </Tag>
-                      </Tooltip>
-                    ))}
-                </div>
-              </Space>
+                <MinusCircleOutlined
+                  className="dynamic-delete-button"
+                  onClick={() => remove(field.name)}
+                />
+              </Form.Item>
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                Add field
+              </Button>
             </Form.Item>
-          ) : (
-            <Form.Item key={name} label={label} name={name} rules={rules}>
-              {input}
-            </Form.Item>
-          )
+          </>
         )}
-
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+      </Form.List>
     );
   };
 
-  return <>{tag ? <TagForm type={tag} form={form} /> : <IGForm />}</>;
+  const DynamicFormNest = ({ name, subFields }) => {
+    return (
+      <Form.List name={name}>
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <Space
+                key={key}
+                style={{ display: "flex", marginBottom: 8 }}
+                align="baseline"
+              >
+                {subFields.map((field) => (
+                  <Form.Item
+                    {...restField}
+                    key={field.name}
+                    name={[name, field.name]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please fill this field.",
+                      },
+                    ]}
+                  >
+                    <Input placeholder={field.input.placeholder} />
+                  </Form.Item>
+                ))}
+
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                Add field
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+    );
+  };
+
+  return (
+    <Form
+      name="text"
+      labelCol={{
+        span: 6,
+      }}
+      wrapperCol={{
+        span: 20,
+      }}
+      form={form}
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      autoComplete="off"
+    >
+      {formModel.map(({ label, name, input }) => (
+        <>
+          {input.type === "text" && (
+            <Form.Item key={name} label={label} name={name} rules={input.rules}>
+              <Input placeholder={input.placeholder} {...input.props} />
+            </Form.Item>
+          )}
+          {input.type === "dynamic" && (
+            <Form.Item key={name} label={label} name={name} rules={input.rules}>
+              <DynamicForm {...input.props} />
+            </Form.Item>
+          )}
+          {input.type === "dynamicNest" && (
+            <Form.Item key={name} label={label} name={name} rules={input.rules}>
+              <DynamicFormNest subFields={input.subFields} {...input.props} />{" "}
+            </Form.Item>
+          )}
+          {input.type === "collapse" && (
+            <Form.Item key={name} label={label} name={name} rules={input.rules}>
+              <CustomCollapse subFields={input.subFields} {...input.props} />
+            </Form.Item>
+          )}
+        </>
+      ))}
+
+      <Form.Item wrapperCol={{ offset: 2, span: 20 }}>
+        <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
+  );
 };
 
 export default CustomForm;

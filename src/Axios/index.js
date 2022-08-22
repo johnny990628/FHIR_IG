@@ -6,7 +6,7 @@ const instance = axios.create({
     // "Access-Control-Allow-Origin": "*",
     // "Access-Control-Allow-Headers": "*",
   },
-  // withCredentials: true,
+  withCredentials: true,
 });
 
 instance.interceptors.request.use(

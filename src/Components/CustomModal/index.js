@@ -2,7 +2,7 @@ import { Button, Modal } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomForm from "../CustomForm";
-import { closeModal, switchForm } from "../../Redux/Slices/Modal";
+import { closeModal } from "../../Redux/Slices/Modal";
 
 const CustomModal = () => {
   const dispatch = useDispatch();
@@ -16,17 +16,13 @@ const CustomModal = () => {
     dispatch(closeModal());
   };
 
-  const handleBack = () => {
-    dispatch(switchForm({ tag: "" }));
-  };
-
-  const ModalTitle = () => {
-    return <div>{tag ? <Button onClick={handleBack}>back</Button> : type}</div>;
-  };
+  // const ModalTitle = () => {
+  //   return <div>{tag ? <Button onClick={handleBack}>back</Button> : type}</div>;
+  // };
 
   return (
     <Modal
-      title={<ModalTitle />}
+      // title={<ModalTitle />}
       visible={isOpen}
       footer={null}
       onOk={handleOk}

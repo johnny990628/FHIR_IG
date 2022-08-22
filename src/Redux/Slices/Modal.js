@@ -43,63 +43,9 @@ const modalSlice = createSlice({
     closeModal: () => {
       return initialState;
     },
-    switchForm: (state, action) => {
-      const { tag } = action.payload;
-      return {
-        ...state,
-        tag,
-      };
-    },
-    updateFormData: (state, action) => {
-      const { data } = action.payload;
-      return {
-        ...state,
-        data: { ...state.data, ...data },
-      };
-    },
-    createTagData: (state, action) => {
-      const { tagType, data } = action.payload;
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [tagType]: [...state.data[tagType], data],
-        },
-      };
-    },
-    updateTagData: (state, action) => {
-      const { tagType, data, index } = action.payload;
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [tagType]: state.data[tagType].map((tag, i) =>
-            i === index ? data : tag
-          ),
-        },
-      };
-    },
-    deleteTagData: (state, action) => {
-      const { tagType, index } = action.payload;
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          [tagType]: state.data[tagType].filter((_, i) => i !== index),
-        },
-      };
-    },
   },
 });
 
-export const {
-  openModal,
-  closeModal,
-  switchForm,
-  createTagData,
-  updateTagData,
-  deleteTagData,
-  updateFormData,
-} = modalSlice.actions;
+export const { openModal, closeModal } = modalSlice.actions;
 
 export default modalSlice.reducer;

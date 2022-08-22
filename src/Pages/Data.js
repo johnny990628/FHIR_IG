@@ -1,19 +1,25 @@
+import { useEffect } from "react";
 import { Button, Space, Tag } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import CustomTable from "../Components/CustomTable";
 import { openModal } from "../Redux/Slices/Modal";
-import { removeData } from "../Redux/Slices/Data";
+import { removeData, fetchIG, deleteIG } from "../Redux/Slices/Data";
 import SearchBar from "../Components/SearchBar";
 
 const Data = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.data);
+  const { data, row } = useSelector((state) => state.data);
+
+  useEffect(() => {
+    dispatch(fetchIG());
+  }, [row]);
 
   const handleEdit = (data) => {
     dispatch(openModal({ data, type: "edit" }));
   };
-  const handleDelete = (name) => {
-    dispatch(removeData({ name }));
+  const handleDelete = (id) => {
+    // dispatch(removeData({ name }));
+    dispatch(deleteIG(id));
   };
   const handleCreate = () => {
     dispatch(openModal({ type: "create" }));
@@ -91,7 +97,7 @@ const Data = () => {
           <Button primary onClick={() => handleEdit(record)}>
             Edit
           </Button>
-          <Button danger onClick={() => handleDelete(record.name)}>
+          <Button danger onClick={() => handleDelete(record._id)}>
             Delete
           </Button>
         </Space>
