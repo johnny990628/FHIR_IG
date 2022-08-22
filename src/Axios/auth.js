@@ -10,7 +10,7 @@ export const apiLogin2 = (data) => {
         axios
             .post(`${process.env.REACT_APP_BASE_URL}/login`, data)
             .then((res) => {
-                cookies.set("user", res.data, { path: "/" });
+                cookies.set("user", res.data);
                 setTimeout(() => {
                     if (cookies.get("user")._id) {
                         window.location.href = window.location.href + "Data";
