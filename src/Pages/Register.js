@@ -14,6 +14,8 @@ const Register = () => {
             lastName: values.lastName,
             email: values.email,
         });
+        alert("等待管理員審核");
+        window.location.href = "/";
     };
 
     return (

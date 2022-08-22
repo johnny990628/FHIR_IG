@@ -252,12 +252,18 @@ const NotAdminUser = () => {
 };
 
 const User = () => {
-    const [isAdminUser, setisAdminUser] = useState("");
+    const [isAdminUser, setisAdminUser] = useState("normal");
 
     useEffect(() => {
         const cookies = new Cookies();
-        setisAdminUser(cookies.get("user").userType);
+
+        if (cookies.get("user")) {
+            setisAdminUser(cookies.get("user").userType);
+        }else{
+            setisAdminUser("normal")
+        }
     }, []);
+    
     return (
         <div>{isAdminUser === "admin" ? <AdminUser /> : <NotAdminUser />}</div>
     );

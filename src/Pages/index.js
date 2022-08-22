@@ -3,6 +3,7 @@ import {
     DatabaseOutlined,
     LogoutOutlined,
 } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import Cookies from "universal-cookie";
 import Data from "./Data";
 import User from "./User";
@@ -10,7 +11,6 @@ import Login from "./Login";
 import Register from "./Register";
 
 const cookies = new Cookies();
-console.log(cookies.get("user"));
 
 const PageItem = [];
 
@@ -25,7 +25,7 @@ const UserList = {
     label: "使用者管理",
     icon: <UserSwitchOutlined />,
     element: <User />,
-    path: "/user",
+    path: "/User",
 };
 
 const LoginList = {
@@ -36,10 +36,21 @@ const LoginList = {
 };
 
 const LogoutList = {
-    label: "登出",
+    label: (
+        <a
+            onClick={() => {
+                cookies.remove("user", { path: "/" });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            }}
+        >
+            登出
+        </a>
+    ),
     icon: <LogoutOutlined />,
     element: <></>,
-    path: "/logout",
+    path: "/",
 };
 
 const RegisterList = {
@@ -49,10 +60,15 @@ const RegisterList = {
     path: "/Register",
 };
 
-if (cookies.get("user").userType === "admin") {
-    PageItem.push(DataList,UserList,LogoutList);
-} else if (cookies.get("user").userType === "normal") {
-    PageItem.push(DataList,LogoutList);
+if (cookies.get("user")) {
+    console.log(cookies.get("user"));
+    if (cookies.get("user").userType === "admin") {
+        PageItem.push(DataList, UserList, LogoutList);
+    } else if (cookies.get("user").userType === "normal") {
+        PageItem.push(DataList, LogoutList);
+    } else {
+        PageItem.push(LoginList, RegisterList);
+    }
 } else {
     PageItem.push(LoginList, RegisterList);
 }

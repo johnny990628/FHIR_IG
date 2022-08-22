@@ -4,7 +4,7 @@ import Pages from "../../Pages";
 import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const [current, setCurrent] = useState("/");
+  const [current, setCurrent] = useState("/Data");
   const navigate = useNavigate();
 
   const menuItems = Pages.map((page) => ({
