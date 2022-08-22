@@ -30,6 +30,13 @@ export const apiRegister = (data) => {
             .post(`${process.env.REACT_APP_BASE_URL}/api/user`, data)
             .then((res) => {
                 console.log(res);
+                if (res.status === 202) {
+                    alert(res.data.data);
+                } else {
+                    alert("等待管理員審核");
+
+                    window.location.href = "/";
+                }
             });
     } catch (e) {
         console.log(e);
