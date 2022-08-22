@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { Button, Space, Tag } from "antd";
+import { Button, Space, Tag, Popconfirm, message } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import CustomTable from "../Components/CustomTable";
 import { openModal } from "../Redux/Slices/Modal";
@@ -18,8 +19,8 @@ const Data = () => {
     dispatch(openModal({ data, type: "edit" }));
   };
   const handleDelete = (id) => {
-    // dispatch(removeData({ name }));
     dispatch(deleteIG(id));
+    message.success(`Delete Success`);
   };
   const handleCreate = () => {
     dispatch(openModal({ type: "create" }));
@@ -97,9 +98,16 @@ const Data = () => {
           <Button primary onClick={() => handleEdit(record)}>
             Edit
           </Button>
-          <Button danger onClick={() => handleDelete(record._id)}>
-            Delete
-          </Button>
+          <Popconfirm
+            placement="topRight"
+            title="Are you sure to delete this row?"
+            onConfirm={() => handleDelete(record._id)}
+            okText="Yes"
+            cancelText="No"
+            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
         </Space>
       ),
     },

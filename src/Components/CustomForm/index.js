@@ -7,6 +7,8 @@ import {
   Collapse,
   Switch,
   InputNumber,
+  Divider,
+  message,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,11 +36,9 @@ const CustomForm = () => {
 
   const onFinish = (formData) => {
     if (type === "create") {
-      // dispatch(addData({ data: { ...formData, analysis: analysisData } }));
       dispatch(createIG(formData));
     }
     if (type === "edit") {
-      // dispatch(editData({ data: { ...formData, analysis: analysisData } }));
       dispatch(
         updateIG({
           id: data._id,
@@ -46,12 +46,9 @@ const CustomForm = () => {
         })
       );
     }
+    message.success(`${type === "create" ? "Create" : "Update"} Success`);
     dispatch(closeModal());
   };
-
-  // const handleTagClick = (tagType) => {
-  //   dispatch(switchForm({ tag: tagType }));
-  // };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -78,7 +75,8 @@ const CustomForm = () => {
               <Form.Item key={field.name} name={[name, field.name]} noStyle>
                 <InputNumber
                   style={{
-                    width: "50%",
+                    width: "25%",
+                    marginRight: ".3rem",
                   }}
                   placeholder={field.label}
                 />
@@ -466,7 +464,8 @@ const CustomForm = () => {
                 >
                   <Input
                     style={{
-                      width: "60%",
+                      width: "40%",
+                      marginRight: "1rem",
                     }}
                     placeholder={label}
                   />
@@ -544,10 +543,10 @@ const CustomForm = () => {
     <Form
       name="text"
       labelCol={{
-        span: 6,
+        span: 4,
       }}
       wrapperCol={{
-        span: 20,
+        span: 18,
       }}
       form={form}
       onFinish={onFinish}
@@ -561,6 +560,7 @@ const CustomForm = () => {
               <Input placeholder={input.placeholder} {...input.props} />
             </Form.Item>
           )}
+
           {input.type === "dynamic" && (
             <Form.Item key={name} label={label} name={name} rules={input.rules}>
               <DynamicForm {...input.props} />
@@ -576,10 +576,14 @@ const CustomForm = () => {
               <CustomCollapse subFields={input.subFields} {...input.props} />
             </Form.Item>
           )}
+          <Divider />
         </>
       ))}
 
-      <Form.Item wrapperCol={{ offset: 2, span: 20 }}>
+      <Form.Item
+        wrapperCol={{ offset: 2, span: 20 }}
+        style={{ marginTop: "3rem" }}
+      >
         <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
           Submit
         </Button>

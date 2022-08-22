@@ -456,7 +456,7 @@ const initialState = {
 
 export const fetchIG = createAsyncThunk(
   "data/fetchIG",
-  async (params, { thunkAPI }) => {
+  async (params, thunkAPI) => {
     try {
       const response = await apiFetchIG(params);
       if (response.data.status !== 1) throw "something went wrong";
@@ -471,10 +471,11 @@ export const fetchIG = createAsyncThunk(
 );
 export const createIG = createAsyncThunk(
   "data/createIG",
-  async (data, { thunkAPI }) => {
+  async (data, thunkAPI) => {
     try {
       const response = await apiCreateIG(data);
       if (response.data.status !== 1) throw "something went wrong";
+
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue();
@@ -483,10 +484,11 @@ export const createIG = createAsyncThunk(
 );
 export const updateIG = createAsyncThunk(
   "data/updateIG",
-  async ({ id, data, thunkAPI }) => {
+  async ({ id, data }, thunkAPI) => {
     try {
       const response = await apiUpdateIG(id, data);
       if (response.data.status !== 1) throw "something went wrong";
+
       return response.data;
     } catch (e) {
       return thunkAPI.rejectWithValue();
@@ -495,7 +497,7 @@ export const updateIG = createAsyncThunk(
 );
 export const deleteIG = createAsyncThunk(
   "data/deleteIG",
-  async (id, { thunkAPI }) => {
+  async (id, thunkAPI) => {
     try {
       const response = await apiDeleteIG(id);
       if (response.data.status !== 1) throw "something went wrong";

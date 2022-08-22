@@ -1,4 +1,4 @@
-import { Button, Form, Input, Space } from "antd";
+import { Button, Form, Input, message, Space } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchIG } from "../../Redux/Slices/Data";
@@ -11,6 +11,7 @@ const SearchBar = () => {
 
   const onFinish = (formData) => {
     dispatch(fetchIG(formData));
+    message.success("Search Complete");
   };
 
   const onReset = () => {

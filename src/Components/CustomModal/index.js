@@ -22,13 +22,13 @@ const CustomModal = () => {
 
   return (
     <Modal
-      // title={<ModalTitle />}
+      title={type}
       visible={isOpen}
       footer={null}
       onOk={handleOk}
       onCancel={handleCancel}
       // bodyStyle={{ height: "60vh" }}
-      width={800}
+      width={900}
     >
       <CustomForm />
     </Modal>
