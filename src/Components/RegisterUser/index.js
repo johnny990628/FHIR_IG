@@ -134,20 +134,20 @@ const RegisterUser = (props) => {
 
     const columns = [
         {
-            title: "username",
+            title: "帳號",
             dataIndex: "username",
             key: "username",
             ...getColumnSearchProps("username"),
             render: (text) => <text>{text}</text>,
         },
         {
-            title: "FirstName",
+            title: "姓氏",
             dataIndex: "firstName",
             key: "firstName",
             render: (text) => <text>{text}</text>,
         },
         {
-            title: "LastName",
+            title: "名子",
             dataIndex: "lastName",
             key: "lastName",
             render: (text) => <text>{text}</text>,
@@ -159,7 +159,7 @@ const RegisterUser = (props) => {
             render: (text) => <p>{text}</p>,
         },
         {
-            title: "_createTime",
+            title: "建立時間",
             dataIndex: "_createTime",
             key: "_createTime",
             sorter: (a, b) => {
@@ -178,7 +178,7 @@ const RegisterUser = (props) => {
             },
         },
         {
-            title: "Action",
+            title: "操作",
             key: "action",
             render: (_, record) => (
                 <>

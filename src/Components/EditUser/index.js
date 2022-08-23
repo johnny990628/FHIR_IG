@@ -98,10 +98,10 @@ const EditUser = (props) => {
     const ModalAdmonRender = () => {
         return (
             <>
-                <p>姓名：{user.firstName}</p>
-                <p>名稱：{user.lastName}</p>
-                <p>信箱：{user.email}</p>
                 <p>帳號：{user.username}</p>
+                <p>姓名：{user.firstName}</p>
+                <p>名子：{user.lastName}</p>
+                <p>信箱：{user.email}</p>
             </>
         );
     };
@@ -128,6 +128,20 @@ const EditUser = (props) => {
                 ) : (
                     <>
                         <p>
+                            帳號：
+                            <Input
+                                placeholder="帳號"
+                                value={user.username}
+                                onChange={(e) => {
+                                    setUser({
+                                        ...user,
+                                        username: e.target.value,
+                                    });
+                                }}
+                                style={Inputstyle}
+                            />
+                        </p>
+                        <p>
                             姓名：
                             <Input
                                 placeholder="姓氏"
@@ -142,9 +156,9 @@ const EditUser = (props) => {
                             />
                         </p>
                         <p>
-                            名稱：
+                            名子：
                             <Input
-                                placeholder="名稱"
+                                placeholder="名子"
                                 value={user.lastName}
                                 onChange={(e) => {
                                     setUser({
@@ -166,20 +180,7 @@ const EditUser = (props) => {
                                 style={Inputstyle}
                             />
                         </p>
-                        <p>
-                            帳號：
-                            <Input
-                                placeholder="帳號"
-                                value={user.username}
-                                onChange={(e) => {
-                                    setUser({
-                                        ...user,
-                                        username: e.target.value,
-                                    });
-                                }}
-                                style={Inputstyle}
-                            />
-                        </p>
+
                         <p>
                             密碼：
                             <Input
