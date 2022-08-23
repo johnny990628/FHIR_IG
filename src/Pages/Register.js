@@ -45,13 +45,13 @@ const Register = () => {
           rules={[
             {
               required: true,
-              message: "Please input your Username!",
+              message: "請輸入帳號~",
             },
           ]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            placeholder="帳號"
           />
         </Form.Item>
         <Form.Item
@@ -59,14 +59,14 @@ const Register = () => {
           rules={[
             {
               required: true,
-              message: "Please input your Password!",
+              message: "請輸入密碼",
             },
           ]}
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="密碼"
           />
         </Form.Item>
         <Form.Item
@@ -74,14 +74,14 @@ const Register = () => {
           rules={[
             {
               required: true,
-              message: "Please input your firstName!",
+              message: "請輸入姓氏",
             },
           ]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
             type="firstName"
-            placeholder="firstName"
+            placeholder="姓氏"
           />
         </Form.Item>
 
@@ -90,14 +90,14 @@ const Register = () => {
           rules={[
             {
               required: true,
-              message: "Please input your lastName!",
+              message: "請輸入名字",
             },
           ]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
             type="lastName"
-            placeholder="lastName"
+            placeholder="名子"
           />
         </Form.Item>
 
@@ -106,7 +106,7 @@ const Register = () => {
           rules={[
             {
               required: true,
-              message: "Please input your email!",
+              message: "請輸入email!",
             },
           ]}
         >

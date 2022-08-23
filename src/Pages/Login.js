@@ -49,13 +49,13 @@ const Login = () => {
           rules={[
             {
               required: true,
-              message: "Please input your Username!",
+              message: "請輸入帳號",
             },
           ]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            placeholder="帳號"
           />
         </Form.Item>
         <Form.Item
@@ -63,14 +63,14 @@ const Login = () => {
           rules={[
             {
               required: true,
-              message: "Please input your Password!",
+              message: "請輸入密碼~",
             },
           ]}
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="密碼"
           />
         </Form.Item>
 
@@ -80,7 +80,7 @@ const Login = () => {
             htmlType="submit"
             className="login-form-button"
           >
-            Log in
+            登入
           </Button>
         </Form.Item>
       </Form>
