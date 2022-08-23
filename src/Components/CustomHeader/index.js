@@ -11,7 +11,7 @@ const Header = () => {
   const { isAdmin, isLogin } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [removeCookie] = useCookies(["user"]);
+  const [cookies,setCookie,removeCookie] = useCookies(["user"]);
   const location = useLocation();
 
   useEffect(() => {
