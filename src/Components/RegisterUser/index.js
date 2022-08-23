@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "antd/dist/antd.css";
-import { Space, Table, Tag, Button, Modal, Input, message } from "antd";
+import { Space, Table, Tag, Button, Modal, Input, message, Badge } from "antd";
 import Highlighter from "react-highlight-words";
 import { SearchOutlined } from "@ant-design/icons";
 import { getUsers, deleteUser, putUser } from "../../Axios/user";
@@ -11,7 +11,6 @@ const RegisterUser = (props) => {
     const [searchText, setSearchText] = useState("");
     const [searchedColumn, setSearchedColumn] = useState("");
     const searchInput = useRef(null);
-
     const deletemessage = () => {
         message.success(`刪除成功`);
     };
@@ -255,25 +254,24 @@ const RegisterUser = (props) => {
                 justifyContent: "center",
                 display: "flex",
             }}
-        >
-            <Button
-                type="primary"
-                onClick={showModal}
-                style={{ width: "20%", marginTop: "10px" }}
-            >
-                註冊認證
-            </Button>
+        >   
+            <Badge count={notstatususer.length} style={{ marginTop: "10px" }}>
+                <Button
+                    type="primary"
+                    onClick={showModal}
+                    style={{  marginTop: "10px" ,width:"400px"}}
+                >
+                    註冊認證
+                </Button>
+            </Badge>
             <Modal
                 title=" 註冊認證"
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                width="80%"
+                width="90%"
             >
-                <Table
-                    columns={columns}
-                    dataSource={notstatususer}
-                />
+                <Table columns={columns} dataSource={notstatususer} />
             </Modal>
         </div>
     );
