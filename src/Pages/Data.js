@@ -9,11 +9,12 @@ import SearchBar from "../Components/SearchBar";
 
 const Data = () => {
   const dispatch = useDispatch();
-  const { data, row } = useSelector((state) => state.data);
+  const { data, rows } = useSelector((state) => state.data);
+  const { isLogin } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchIG());
-  }, [row]);
+  }, []);
 
   const handleEdit = (data) => {
     dispatch(openModal({ data, type: "edit" }));
@@ -88,35 +89,35 @@ const Data = () => {
         </div>
       ),
     },
-
     {
       title: "Action",
       key: "action",
       width: "10%",
-      render: (_, record) => (
-        <Space>
-          <Button primary onClick={() => handleEdit(record)}>
-            Edit
-          </Button>
-          <Popconfirm
-            placement="topRight"
-            title="Are you sure to delete this row?"
-            onConfirm={() => handleDelete(record._id)}
-            okText="Yes"
-            cancelText="No"
-            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-          >
-            <Button danger>Delete</Button>
-          </Popconfirm>
-        </Space>
-      ),
+      render: (_, record) =>
+        isLogin && (
+          <Space>
+            <Button primary onClick={() => handleEdit(record)}>
+              Edit
+            </Button>
+            <Popconfirm
+              placement="topRight"
+              title="Are you sure to delete this row?"
+              onConfirm={() => handleDelete(record._id)}
+              okText="Yes"
+              cancelText="No"
+              icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+            >
+              <Button danger>Delete</Button>
+            </Popconfirm>
+          </Space>
+        ),
     },
   ];
   return (
     <div>
       <SearchBar />
-      <Button onClick={handleCreate}>New</Button>
-      <CustomTable data={data} columns={columns} />
+      {isLogin && <Button onClick={handleCreate}>New</Button>}
+      <CustomTable data={data} columns={columns} total={rows} />
     </div>
   );
 };

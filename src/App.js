@@ -6,8 +6,7 @@ import Store from "./Redux/Store";
 import Cookies from "universal-cookie";
 import { apiLogin } from "./Axios/auth";
 
-function App() {
-
+const App = () => {
   return (
     <HashRouter>
       <Provider store={Store}>
@@ -15,6 +14,6 @@ function App() {
       </Provider>
     </HashRouter>
   );
-}
+};
 
 export default App;

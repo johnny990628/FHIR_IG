@@ -454,16 +454,21 @@ const initialState = {
   data: [],
 };
 
+const fetchAndSortIG = async (params) => {
+  const response = await apiFetchIG(params);
+  if (response.data.status !== 1) throw "something went wrong";
+  const sortData = response.data.data.sort(
+    (a, b) => new Date(b._createTime) - new Date(a._createTime)
+  );
+  return { ...response.data, data: sortData };
+};
+
 export const fetchIG = createAsyncThunk(
   "data/fetchIG",
   async (params, thunkAPI) => {
     try {
-      const response = await apiFetchIG(params);
-      if (response.data.status !== 1) throw "something went wrong";
-      response.data.data.sort(
-        (a, b) => new Date(b._createTime) - new Date(a._createTime)
-      );
-      return response.data;
+      const data = await fetchAndSortIG(params);
+      return data;
     } catch (e) {
       return thunkAPI.rejectWithValue();
     }
@@ -475,8 +480,8 @@ export const createIG = createAsyncThunk(
     try {
       const response = await apiCreateIG(data);
       if (response.data.status !== 1) throw "something went wrong";
-
-      return response.data;
+      const res = await fetchAndSortIG();
+      return res;
     } catch (e) {
       return thunkAPI.rejectWithValue();
     }
@@ -488,8 +493,8 @@ export const updateIG = createAsyncThunk(
     try {
       const response = await apiUpdateIG(id, data);
       if (response.data.status !== 1) throw "something went wrong";
-
-      return response.data;
+      const res = await fetchAndSortIG();
+      return res;
     } catch (e) {
       return thunkAPI.rejectWithValue();
     }
@@ -501,7 +506,8 @@ export const deleteIG = createAsyncThunk(
     try {
       const response = await apiDeleteIG(id);
       if (response.data.status !== 1) throw "something went wrong";
-      return response.data;
+      const res = await fetchAndSortIG();
+      return res;
     } catch (e) {
       return thunkAPI.rejectWithValue();
     }
@@ -539,22 +545,13 @@ const dataSlice = createSlice({
       return action.payload;
     },
     [createIG.fulfilled]: (state, action) => {
-      return {
-        ...state,
-        row: -1,
-      };
+      return action.payload;
     },
     [updateIG.fulfilled]: (state, action) => {
-      return {
-        ...state,
-        row: -1,
-      };
+      return action.payload;
     },
     [deleteIG.fulfilled]: (state, action) => {
-      return {
-        ...state,
-        row: -1,
-      };
+      return action.payload;
     },
   },
 });

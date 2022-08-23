@@ -1,27 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Menu } from "antd";
-import Pages from "../../Pages";
-import { useNavigate } from "react-router-dom";
+import { Button, Menu, message } from "antd";
+import { adminPages, userPages, notAuthPages } from "../../Pages";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useCookies } from "react-cookie";
 
 const Header = () => {
-  const [current, setCurrent] = useState("/Data");
+  const [current, setCurrent] = useState("/data");
+  const [menuItems, setMenuItems] = useState([]);
+  const { isAdmin, isLogin } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [removeCookie] = useCookies(["user"]);
+  const location = useLocation();
 
-  const menuItems = Pages.map((page) => ({
-    label: page.label,
-    key: page.path,
-    icon: page.icon,
-  }));
+  useEffect(() => {
+    const pages = isLogin ? (isAdmin ? adminPages : userPages) : notAuthPages;
+    setMenuItems(pages);
+  }, [isLogin]);
 
   const onClick = (e) => {
-    setCurrent(e.key);
-    navigate(e.key);
+    if (e.key === "/logout") {
+      removeCookie("user");
+      setCurrent("/login");
+      navigate("/login");
+      message.success("Logout Success");
+    } else {
+      setCurrent(e.key);
+      navigate(e.key);
+    }
   };
 
   //獲取URL提供給Header的current
   useEffect(() => {
-    setCurrent("/" + window.location.href.split("/").at(-1));
-  }, [window.location.href]);
+    setCurrent(location.pathname);
+  }, [location.pathname]);
 
   return (
     <Menu
