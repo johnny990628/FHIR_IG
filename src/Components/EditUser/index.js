@@ -100,7 +100,7 @@ const EditUser = (props) => {
             <>
                 <p>帳號：{user.username}</p>
                 <p>姓名：{user.firstName}</p>
-                <p>名子：{user.lastName}</p>
+                <p>名字：{user.lastName}</p>
                 <p>信箱：{user.email}</p>
             </>
         );
@@ -156,9 +156,9 @@ const EditUser = (props) => {
                             />
                         </p>
                         <p>
-                            名子：
+                            名字：
                             <Input
-                                placeholder="名子"
+                                placeholder="名字"
                                 value={user.lastName}
                                 onChange={(e) => {
                                     setUser({
