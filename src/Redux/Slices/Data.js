@@ -451,6 +451,8 @@ import {
 const initialState = {
   status: 0,
   rows: 0,
+  category:[],
+  authority:[],
   loading: false,
   data: [],
 };
@@ -469,7 +471,10 @@ export const fetchIG = createAsyncThunk(
   async (params, thunkAPI) => {
     try {
       const data = await fetchAndSortIG(params);
-      return data;
+      const category = new Set(data.data.map(d=>d.category))
+      const authority = new Set(data.data.map(d=>d.authority))
+     
+      return {...data,category:[...category],authority:[...authority]};
     } catch (e) {
       return thunkAPI.rejectWithValue();
     }
@@ -562,6 +567,7 @@ const dataSlice = createSlice({
     },
     [createIG.fulfilled]: (state, action) => {
       return {
+        ...state,
         ...action.payload,
         loading: false,
       };
@@ -574,6 +580,7 @@ const dataSlice = createSlice({
     },
     [updateIG.fulfilled]: (state, action) => {
       return {
+        ...state,
         ...action.payload,
         loading: false,
       };
@@ -586,6 +593,7 @@ const dataSlice = createSlice({
     },
     [deleteIG.fulfilled]: (state, action) => {
       return {
+        ...state,
         ...action.payload,
         loading: false,
       };
