@@ -50,6 +50,8 @@ After entering Folder in the ./build
 * [johnny990628](https://github.com/johnny990628)
 * [Louis](https://github.com/Yang-Jiaxiang)
 
-
+## Refer to 
+[HL7 FHIR Foundation Enabling health interoperability through FHIR](http://fhir.org/guides/registry/)  
+[TW Core IG](http://hitstdio.ntunhs.edu.tw/ig/twcore/index.html)
 
 
