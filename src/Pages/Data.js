@@ -28,7 +28,7 @@ const Data = () => {
   };
   const handleDelete = (id) => {
     dispatch(deleteIG(id));
-    message.success(`Delete Success`);
+    message.success(`刪除成功`);
   };
   const handleCreate = () => {
     dispatch(openModal({ type: "create" }));

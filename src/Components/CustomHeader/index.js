@@ -8,14 +8,19 @@ import { useCookies } from "react-cookie";
 const Header = () => {
   const [current, setCurrent] = useState("/data");
   const [menuItems, setMenuItems] = useState([]);
-  const { isAdmin, isLogin } = useSelector((state) => state.auth);
+  const { isAdmin, isLogin, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [cookies,setCookie,removeCookie] = useCookies(["user"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const location = useLocation();
 
   useEffect(() => {
     const pages = isLogin ? (isAdmin ? adminPages : userPages) : notAuthPages;
+    if (isLogin && pages.length < 4)
+      pages.push({
+        key: user.username,
+        label: `${user.firstName}  ${user.lastName} 您好`,
+        disabled: true,
+      });
     setMenuItems(pages);
   }, [isLogin]);
 
@@ -37,12 +42,14 @@ const Header = () => {
   }, [location.pathname]);
 
   return (
-    <Menu
-      onClick={onClick}
-      selectedKeys={[current]}
-      mode="horizontal"
-      items={menuItems}
-    />
+    <div>
+      <Menu
+        onClick={onClick}
+        selectedKeys={[current]}
+        mode="horizontal"
+        items={menuItems}
+      />
+    </div>
   );
 };
 

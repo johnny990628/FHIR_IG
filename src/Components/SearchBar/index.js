@@ -128,7 +128,7 @@ const SearchBar = () => {
         onValuesChange={onValuesChange}
         autoComplete="off"
       >
-        {formModel.map(({ label, name, rules, input, childrens }) => (
+        {formModel.map(({ label, name, rules, input }) => (
           <>
             {input.type === "text" && (
               <Form.Item

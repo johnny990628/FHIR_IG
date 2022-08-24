@@ -4,9 +4,9 @@ import {
   Form,
   Input,
   Space,
-  Collapse,
+  AutoComplete,
   Switch,
-  InputNumber,
+  Tooltip,
   Divider,
   message,
 } from "antd";
@@ -16,7 +16,8 @@ import { createIG, updateIG } from "../../Redux/Slices/Data";
 import { closeModal } from "../../Redux/Slices/Modal";
 
 const CustomForm = () => {
-  const { isOpen, data, type, tag } = useSelector((state) => state.modal);
+  const { isOpen, data, type } = useSelector((state) => state.modal);
+  const { category, authority } = useSelector((state) => state.data);
   const [form] = Form.useForm();
   const [analysisForm] = Form.useForm();
 
@@ -46,12 +47,13 @@ const CustomForm = () => {
         })
       );
     }
-    message.success(`${type === "create" ? "Create" : "Update"} Success`);
+    message.success(`${type === "create" ? "新增" : "更新"} 成功`);
     dispatch(closeModal());
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    console.log(errorInfo);
+    message.error("提交失敗!必要欄位未填");
   };
 
   const CustomCollapse = ({ name, subFields }) => {
@@ -69,12 +71,15 @@ const CustomForm = () => {
                 <Switch placeholder={field.label} />
               </Form.Item>
             )}
-            {field.input.type === "number" && (
-              <Form.Item key={field.name} name={[name, field.name]} noStyle>
+            {field.input.type === "text" && (
+              <Form.Item
+                key={field.name}
+                label={field.label}
+                name={[name, field.name]}
+              >
                 <Input
                   style={{
                     width: "25%",
-                    marginRight: ".3rem",
                   }}
                   placeholder={field.label}
                 />
@@ -86,9 +91,130 @@ const CustomForm = () => {
     );
   };
 
+  const DynamicForm = ({ label, name }) => {
+    return (
+      <Form.List label={label} name={name}>
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map((field, index) => (
+              <Form.Item required={false} key={field.key}>
+                <Form.Item
+                  {...field}
+                  validateTrigger={["onChange", "onBlur"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please fill or delete this field.",
+                    },
+                  ]}
+                  noStyle
+                >
+                  <Input
+                    style={{
+                      width: "40%",
+                      marginRight: "1rem",
+                    }}
+                    placeholder={label}
+                  />
+                </Form.Item>
+
+                <MinusCircleOutlined
+                  className="dynamic-delete-button"
+                  onClick={() => remove(field.name)}
+                />
+              </Form.Item>
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                新增欄位
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+    );
+  };
+
+  const DynamicFormNest = ({ name, subFields }) => {
+    return (
+      <Form.List name={name}>
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <Space
+                key={key}
+                style={{ display: "flex", marginBottom: 8 }}
+                align="baseline"
+              >
+                {subFields.map((field) => (
+                  <Tooltip key={field.name} title={field.label}>
+                    <Form.Item
+                      {...restField}
+                      name={[name, field.name]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please fill this field.",
+                        },
+                      ]}
+                    >
+                      <Input placeholder={field.input.placeholder} />
+                    </Form.Item>
+                  </Tooltip>
+                ))}
+
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                新增欄位
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+    );
+  };
+
+  const SelectInput = ({ name, placeholder, options }) => {
+    const { Option } = AutoComplete;
+
+    const [value, setValue] = useState("");
+
+    const handleChange = (newValue) => {
+      setValue(newValue);
+    };
+
+    return (
+      <Form.Item name={name}>
+        <AutoComplete
+          showArrow
+          onChange={handleChange}
+          value={value}
+          placeholder={placeholder}
+        >
+          {options.map((option) => (
+            <Option key={option}>{option}</Option>
+          ))}
+        </AutoComplete>
+      </Form.Item>
+    );
+  };
+
   const formModel = [
     {
-      label: "Name",
+      label: "名稱(Name)",
       name: "name",
       input: {
         type: "text",
@@ -102,24 +228,10 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Category",
-      name: "category",
-      input: {
-        type: "text",
-        placeholder: "Category",
-        rules: [
-          {
-            required: true,
-            message: "Please input category !",
-          },
-        ],
-      },
-    },
-    {
-      label: "Description",
+      label: "描述(Description)",
       name: "description",
       input: {
-        type: "text",
+        type: "textArea",
         placeholder: "Description",
         rules: [
           {
@@ -130,21 +242,39 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Authority",
+      label: "類別(Category)",
+      name: "category",
+      input: {
+        type: "select",
+        placeholder: "Category",
+        props: { name: "category", placeholder: "Category" },
+        rules: [
+          {
+            required: true,
+            message: "Please input category !",
+          },
+        ],
+        options: category,
+      },
+    },
+    {
+      label: "單位(Authority)",
       name: "authority",
       input: {
-        type: "text",
+        type: "select",
         placeholder: "Authority",
+        props: { name: "authority", placeholder: "Authority" },
         rules: [
           {
             required: true,
             message: "Please input authority !",
           },
         ],
+        options: authority,
       },
     },
     {
-      label: "Country",
+      label: "國家(Country)",
       name: "country",
       input: {
         type: "text",
@@ -168,7 +298,7 @@ const CustomForm = () => {
       },
     },
     {
-      label: "History",
+      label: "歷史(History)",
       name: "history",
       input: {
         type: "text",
@@ -186,7 +316,7 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Canonical",
+      label: "標準(Canonical)",
       name: "canonical",
       input: {
         type: "text",
@@ -195,7 +325,7 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Language",
+      label: "語言(Language)",
       name: "language",
       input: {
         type: "dynamic",
@@ -205,7 +335,7 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Editions",
+      label: "版本(Editions)",
       name: "editions",
       input: {
         type: "dynamicNest",
@@ -287,7 +417,7 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Implementations",
+      label: "實作(Implementations)",
       name: "implementations",
       input: {
         type: "dynamicNest",
@@ -341,7 +471,7 @@ const CustomForm = () => {
       },
     },
     {
-      label: "Analysis",
+      label: "分析(Analysis)",
       name: "analysis",
       input: {
         type: "collapse",
@@ -393,7 +523,7 @@ const CustomForm = () => {
             label: "Profiles",
             name: "profiles",
             input: {
-              type: "number",
+              type: "text",
               rules: [],
             },
           },
@@ -401,7 +531,7 @@ const CustomForm = () => {
             label: "Extensions",
             name: "extensions",
             input: {
-              type: "number",
+              type: "text",
               rules: [],
             },
           },
@@ -409,7 +539,7 @@ const CustomForm = () => {
             label: "Operations",
             name: "operations",
             input: {
-              type: "number",
+              type: "text",
               rules: [],
             },
           },
@@ -417,7 +547,7 @@ const CustomForm = () => {
             label: "Valuesets",
             name: "valuesets",
             input: {
-              type: "number",
+              type: "text",
               rules: [],
             },
           },
@@ -425,7 +555,7 @@ const CustomForm = () => {
             label: "CodeSystems",
             name: "codeSystems",
             input: {
-              type: "number",
+              type: "text",
               rules: [],
             },
           },
@@ -433,7 +563,7 @@ const CustomForm = () => {
             label: "Examples",
             name: "examples",
             input: {
-              type: "number",
+              type: "text",
               rules: [],
             },
           },
@@ -442,106 +572,11 @@ const CustomForm = () => {
     },
   ];
 
-  const DynamicForm = ({ label, name }) => {
-    return (
-      <Form.List label={label} name={name}>
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map((field, index) => (
-              <Form.Item required={false} key={field.key}>
-                <Form.Item
-                  {...field}
-                  validateTrigger={["onChange", "onBlur"]}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please fill or delete this field.",
-                    },
-                  ]}
-                  noStyle
-                >
-                  <Input
-                    style={{
-                      width: "40%",
-                      marginRight: "1rem",
-                    }}
-                    placeholder={label}
-                  />
-                </Form.Item>
-
-                <MinusCircleOutlined
-                  className="dynamic-delete-button"
-                  onClick={() => remove(field.name)}
-                />
-              </Form.Item>
-            ))}
-            <Form.Item>
-              <Button
-                type="dashed"
-                onClick={() => add()}
-                block
-                icon={<PlusOutlined />}
-              >
-                新增欄位
-              </Button>
-            </Form.Item>
-          </>
-        )}
-      </Form.List>
-    );
-  };
-
-  const DynamicFormNest = ({ name, subFields }) => {
-    return (
-      <Form.List name={name}>
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map(({ key, name, ...restField }) => (
-              <Space
-                key={key}
-                style={{ display: "flex", marginBottom: 8 }}
-                align="baseline"
-              >
-                {subFields.map((field) => (
-                  <Form.Item
-                    {...restField}
-                    key={field.name}
-                    name={[name, field.name]}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please fill this field.",
-                      },
-                    ]}
-                  >
-                    <Input placeholder={field.input.placeholder} />
-                  </Form.Item>
-                ))}
-
-                <MinusCircleOutlined onClick={() => remove(name)} />
-              </Space>
-            ))}
-            <Form.Item>
-              <Button
-                type="dashed"
-                onClick={() => add()}
-                block
-                icon={<PlusOutlined />}
-              >
-                新增欄位
-              </Button>
-            </Form.Item>
-          </>
-        )}
-      </Form.List>
-    );
-  };
-
   return (
     <Form
       name="text"
       labelCol={{
-        span: 4,
+        span: 5,
       }}
       wrapperCol={{
         span: 18,
@@ -559,6 +594,20 @@ const CustomForm = () => {
               <Input placeholder={input.placeholder} {...input.props} />
             </Form.Item>
           )}
+          {input.type === "textArea" && (
+            <Form.Item key={name} label={label} name={name} rules={input.rules}>
+              <Input.TextArea
+                rows={4}
+                placeholder={input.placeholder}
+                {...input.props}
+              />
+            </Form.Item>
+          )}
+          {input.type === "select" && (
+            <Form.Item key={name} label={label} name={name} rules={input.rules}>
+              <SelectInput options={input.options} {...input.props} />
+            </Form.Item>
+          )}
 
           {input.type === "dynamic" && (
             <Form.Item key={name} label={label} name={name} rules={input.rules}>
@@ -567,7 +616,7 @@ const CustomForm = () => {
           )}
           {input.type === "dynamicNest" && (
             <Form.Item key={name} label={label} name={name} rules={input.rules}>
-              <DynamicFormNest subFields={input.subFields} {...input.props} />{" "}
+              <DynamicFormNest subFields={input.subFields} {...input.props} />
             </Form.Item>
           )}
           {input.type === "collapse" && (
