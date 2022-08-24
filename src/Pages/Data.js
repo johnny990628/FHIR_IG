@@ -34,14 +34,13 @@ const Data = () => {
     dispatch(openModal({ type: "create" }));
   };
 
-  const header = () => {
+  const Header = () => {
     return (
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: ".5rem",
         }}
       >
         {isLogin && (
@@ -56,7 +55,7 @@ const Data = () => {
 
   const columns = [
     {
-      title: "Specification",
+      title: "規範說明",
       dataIndex: "Specification",
       key: "Specification",
 
@@ -100,13 +99,13 @@ const Data = () => {
       },
     },
     {
-      title: "category",
+      title: "類別",
       dataIndex: "category",
       key: "category",
       width: "12%",
     },
     {
-      title: "Authority",
+      title: "單位",
       dataIndex: "Authority",
       key: "Authority",
       width: "8%",
@@ -117,7 +116,7 @@ const Data = () => {
       ),
     },
     {
-      title: "Action",
+      title: "操作",
       key: "action",
       width: "10%",
       render: (_, record) =>
@@ -132,10 +131,10 @@ const Data = () => {
             </Button>
             <Popconfirm
               placement="topRight"
-              title="Are you sure to delete this row?"
+              title="確定要刪除?"
               onConfirm={() => handleDelete(record._id)}
-              okText="Yes"
-              cancelText="No"
+              okText="是"
+              cancelText="否"
               icon={<QuestionCircleOutlined style={{ color: "red" }} />}
             >
               <Button danger icon={<DeleteOutlined />}>
@@ -151,8 +150,11 @@ const Data = () => {
       style={{
         width: "100%",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        padding: "2rem",
+        paddingTop: "1rem",
       }}
     >
       <CustomTable
@@ -160,7 +162,7 @@ const Data = () => {
         columns={columns}
         total={rows}
         loading={loading}
-        header={header}
+        Header={Header}
       />
     </div>
   );

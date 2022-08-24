@@ -13,7 +13,7 @@ const SearchBar = () => {
 
   const onFinish = (formData) => {
     // dispatch(fetchIG(formData));
-    message.success("Search Complete");
+    // message.success("Search Complete");
   };
 
   const onReset = () => {
@@ -41,7 +41,7 @@ const SearchBar = () => {
         : dispatch(resetSearchData());
       hide();
     }, 500);
-  }, 400);
+  }, 500);
 
   const CustomSelect = ({ options, name }) => {
     const { Option } = Select;

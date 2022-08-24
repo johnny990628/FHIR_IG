@@ -43,6 +43,7 @@ const Login = () => {
           remember: true,
         }}
         onFinish={onFinish}
+        size="large"
       >
         <Form.Item
           name="username"

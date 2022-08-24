@@ -39,6 +39,7 @@ const Register = () => {
           remember: true,
         }}
         onFinish={onFinish}
+        size="large"
       >
         <Form.Item
           name="username"

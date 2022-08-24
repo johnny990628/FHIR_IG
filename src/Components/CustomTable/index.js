@@ -1,23 +1,21 @@
 import React from "react";
-import { Button, Table, Pagination } from "antd";
-import { useDispatch } from "react-redux";
-import { openModal } from "../../Redux/Slices/Modal";
+import { Table } from "antd";
 
-const CustomTable = ({ data, columns, total, loading, header }) => {
+const CustomTable = ({ data, columns, total, loading, Header }) => {
   return (
     <div style={{ width: "96%" }}>
       <Table
         dataSource={data}
         columns={columns}
         loading={loading}
-        size="middle"
+        size="large"
         pagination={{
           position: ["bottomCenter", "topRight"],
           total,
           showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} `,
           showSizeChanger: true,
         }}
-        title={header}
+        title={Header}
       />
     </div>
   );
