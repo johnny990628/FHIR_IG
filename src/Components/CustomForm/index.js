@@ -55,8 +55,6 @@ const CustomForm = () => {
   };
 
   const CustomCollapse = ({ name, subFields }) => {
-    const { Panel } = Collapse;
-
     return (
       <Input.Group>
         {subFields.map((field) => (
@@ -73,7 +71,7 @@ const CustomForm = () => {
             )}
             {field.input.type === "number" && (
               <Form.Item key={field.name} name={[name, field.name]} noStyle>
-                <InputNumber
+                <Input
                   style={{
                     width: "25%",
                     marginRight: ".3rem",
@@ -484,7 +482,7 @@ const CustomForm = () => {
                 block
                 icon={<PlusOutlined />}
               >
-                Add field
+                新增欄位
               </Button>
             </Form.Item>
           </>
@@ -530,7 +528,7 @@ const CustomForm = () => {
                 block
                 icon={<PlusOutlined />}
               >
-                Add field
+                新增欄位
               </Button>
             </Form.Item>
           </>
@@ -552,6 +550,7 @@ const CustomForm = () => {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
+      labelAlign="right"
     >
       {formModel.map(({ label, name, input }) => (
         <>
@@ -585,7 +584,7 @@ const CustomForm = () => {
         style={{ marginTop: "3rem" }}
       >
         <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-          Submit
+          提交
         </Button>
       </Form.Item>
     </Form>

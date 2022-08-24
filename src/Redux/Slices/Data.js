@@ -451,6 +451,7 @@ import {
 const initialState = {
   status: 0,
   rows: 0,
+  loading: false,
   data: [],
 };
 
@@ -541,17 +542,53 @@ const dataSlice = createSlice({
     },
   },
   extraReducers: {
+    [fetchIG.pending]: (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
     [fetchIG.fulfilled]: (state, action) => {
-      return action.payload;
+      return {
+        ...action.payload,
+        loading: false,
+      };
+    },
+    [createIG.pending]: (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
     },
     [createIG.fulfilled]: (state, action) => {
-      return action.payload;
+      return {
+        ...action.payload,
+        loading: false,
+      };
+    },
+    [updateIG.pending]: (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
     },
     [updateIG.fulfilled]: (state, action) => {
-      return action.payload;
+      return {
+        ...action.payload,
+        loading: false,
+      };
+    },
+    [deleteIG.pending]: (state, action) => {
+      return {
+        ...state,
+        loading: true,
+      };
     },
     [deleteIG.fulfilled]: (state, action) => {
-      return action.payload;
+      return {
+        ...action.payload,
+        loading: false,
+      };
     },
   },
 });

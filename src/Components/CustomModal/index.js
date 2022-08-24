@@ -22,7 +22,7 @@ const CustomModal = () => {
 
   return (
     <Modal
-      title={type}
+      title={type === "create" ? "新增" : "編輯"}
       visible={isOpen}
       footer={null}
       onOk={handleOk}

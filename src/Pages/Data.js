@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { Button, Space, Tag, Popconfirm, message } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  QuestionCircleOutlined,
+  FormOutlined,
+  ScissorOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import CustomTable from "../Components/CustomTable";
 import { openModal } from "../Redux/Slices/Modal";
@@ -9,7 +14,7 @@ import SearchBar from "../Components/SearchBar";
 
 const Data = () => {
   const dispatch = useDispatch();
-  const { data, rows } = useSelector((state) => state.data);
+  const { data, rows, loading } = useSelector((state) => state.data);
   const { isLogin } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -25,6 +30,26 @@ const Data = () => {
   };
   const handleCreate = () => {
     dispatch(openModal({ type: "create" }));
+  };
+
+  const header = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: ".5rem",
+        }}
+      >
+        {isLogin && (
+          <Button type="primary" onClick={handleCreate} icon={<FormOutlined />}>
+            新增資料
+          </Button>
+        )}
+        <SearchBar />
+      </div>
+    );
   };
 
   const columns = [
@@ -96,8 +121,12 @@ const Data = () => {
       render: (_, record) =>
         isLogin && (
           <Space>
-            <Button primary onClick={() => handleEdit(record)}>
-              Edit
+            <Button
+              primary
+              onClick={() => handleEdit(record)}
+              icon={<ScissorOutlined />}
+            >
+              編輯
             </Button>
             <Popconfirm
               placement="topRight"
@@ -107,17 +136,30 @@ const Data = () => {
               cancelText="No"
               icon={<QuestionCircleOutlined style={{ color: "red" }} />}
             >
-              <Button danger>Delete</Button>
+              <Button danger icon={<DeleteOutlined />}>
+                刪除
+              </Button>
             </Popconfirm>
           </Space>
         ),
     },
   ];
   return (
-    <div>
-      <SearchBar />
-      {isLogin && <Button onClick={handleCreate}>New</Button>}
-      <CustomTable data={data} columns={columns} total={rows} />
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CustomTable
+        data={data}
+        columns={columns}
+        total={rows}
+        loading={loading}
+        header={header}
+      />
     </div>
   );
 };

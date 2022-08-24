@@ -1,10 +1,11 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { routePages } from "../Pages";
 
 const Router = () => {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/data" />} />
       {routePages.map(({ label, path, element }) => (
         <Route key={label} path={path} element={element} />
       ))}

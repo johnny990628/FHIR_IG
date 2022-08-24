@@ -1,5 +1,6 @@
-import { Button, Form, Input, message, Space } from "antd";
 import React, { useEffect } from "react";
+import { Button, Form, Input, message, Space } from "antd";
+import { SearchOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchIG } from "../../Redux/Slices/Data";
 
@@ -37,12 +38,6 @@ const SearchBar = () => {
       rules: [],
     },
     {
-      label: "Country",
-      name: "country",
-      input: <Input />,
-      rules: [],
-    },
-    {
       label: "Release",
       name: "release",
       input: <Input />,
@@ -66,17 +61,17 @@ const SearchBar = () => {
     <div
       style={{
         display: "flex",
-        padding: "1rem",
         justifyContent: "center",
         alignItems: "center",
+        marginLeft: "1rem",
       }}
     >
       <Form
         labelCol={{
-          span: 8,
+          span: 10,
         }}
         wrapperCol={{
-          span: 14,
+          span: 10,
         }}
         layout="inline"
         form={form}
@@ -84,32 +79,27 @@ const SearchBar = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Space>
-          {formModel.map(({ label, name, rules, input, childrens }) => (
-            <Form.Item key={name} label={label} name={name} rules={rules}>
-              {input}
-            </Form.Item>
-          ))}
-        </Space>
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
-          <Button type="primary" htmlType="submit">
-            Search
+        {formModel.map(({ label, name, rules, input, childrens }) => (
+          <Form.Item
+            key={name}
+            label={label}
+            name={name}
+            rules={rules}
+            style={{ margin: ".3rem" }}
+          >
+            {input}
+          </Form.Item>
+        ))}
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+            搜尋
           </Button>
         </Form.Item>
 
-        <Form.Item
-          wrapperCol={{
-            offset: 8,
-            span: 16,
-          }}
-        >
-          <Button htmlType="button" onClick={onReset}>
-            Reset
+        <Form.Item>
+          <Button htmlType="button" onClick={onReset} icon={<DeleteOutlined />}>
+            清除
           </Button>
         </Form.Item>
       </Form>
