@@ -144,26 +144,26 @@ const AdminUser = () => {
 
     const columns = [
         {
-            title: "username",
+            title: "帳號",
             dataIndex: "username",
             key: "username",
             ...getColumnSearchProps("username"),
             render: (text) => <text>{text}</text>,
         },
         {
-            title: "FirstName",
+            title: "姓氏",
             dataIndex: "firstName",
             key: "firstName",
             render: (text) => <text>{text}</text>,
         },
         {
-            title: "LastName",
+            title: "名子",
             dataIndex: "lastName",
             key: "lastName",
             render: (text) => <text>{text}</text>,
         },
         {
-            title: "_createTime",
+            title: "帳號建立時間",
             dataIndex: "_createTime",
             key: "_createTime",
             sorter: (a, b) => {
@@ -182,7 +182,7 @@ const AdminUser = () => {
             },
         },
         {
-            title: "userType",
+            title: "帳號類別",
             dataIndex: "userType",
             key: "userType",
             filters: [
@@ -199,7 +199,7 @@ const AdminUser = () => {
             onFilter: (value, record) => record.userType.startsWith(value),
         },
         {
-            title: "Action",
+            title: "操作",
             key: "action",
             render: (_, record) => (
                 <>
