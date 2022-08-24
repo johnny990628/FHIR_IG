@@ -157,7 +157,7 @@ const AdminUser = () => {
             render: (text) => <text>{text}</text>,
         },
         {
-            title: "名子",
+            title: "名字",
             dataIndex: "lastName",
             key: "lastName",
             render: (text) => <text>{text}</text>,

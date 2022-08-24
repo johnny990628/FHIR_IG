@@ -97,7 +97,7 @@ const Register = () => {
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
             type="lastName"
-            placeholder="名子"
+            placeholder="名字"
           />
         </Form.Item>
 
