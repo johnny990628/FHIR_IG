@@ -4,8 +4,6 @@ import { useDispatch } from "react-redux";
 import { openModal } from "../../Redux/Slices/Modal";
 
 const CustomTable = ({ data, columns, total, loading, header }) => {
-  const dispatch = useDispatch();
-
   return (
     <div style={{ width: "96%" }}>
       <Table

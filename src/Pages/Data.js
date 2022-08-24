@@ -14,7 +14,9 @@ import SearchBar from "../Components/SearchBar";
 
 const Data = () => {
   const dispatch = useDispatch();
-  const { data, rows, loading } = useSelector((state) => state.data);
+  const { searchData, data, rows, loading } = useSelector(
+    (state) => state.data
+  );
   const { isLogin } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -154,7 +156,7 @@ const Data = () => {
       }}
     >
       <CustomTable
-        data={data}
+        data={searchData}
         columns={columns}
         total={rows}
         loading={loading}

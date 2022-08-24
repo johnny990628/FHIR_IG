@@ -451,10 +451,12 @@ import {
 const initialState = {
   status: 0,
   rows: 0,
-  category:[],
-  authority:[],
+  category: [],
+  authority: [],
   loading: false,
+  searchData: [],
   data: [],
+  searchQuery: {},
 };
 
 const fetchAndSortIG = async (params) => {
@@ -463,7 +465,7 @@ const fetchAndSortIG = async (params) => {
   const sortData = response.data.data.sort(
     (a, b) => new Date(b._createTime) - new Date(a._createTime)
   );
-  return { ...response.data, data: sortData };
+  return { ...response.data, data: sortData, searchData: sortData };
 };
 
 export const fetchIG = createAsyncThunk(
@@ -471,10 +473,10 @@ export const fetchIG = createAsyncThunk(
   async (params, thunkAPI) => {
     try {
       const data = await fetchAndSortIG(params);
-      const category = new Set(data.data.map(d=>d.category))
-      const authority = new Set(data.data.map(d=>d.authority))
-     
-      return {...data,category:[...category],authority:[...authority]};
+      const category = new Set(data.data.map((d) => d.category));
+      const authority = new Set(data.data.map((d) => d.authority));
+
+      return { ...data, category: [...category], authority: [...authority] };
     } catch (e) {
       return thunkAPI.rejectWithValue();
     }
@@ -524,26 +526,28 @@ const dataSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
-    addData: (state, action) => {
-      const { data } = action.payload;
-      return [...state, data];
-    },
-    removeData: (state, action) => {
-      const { name } = action.payload;
-      return state.filter((s) => s.name !== name);
-    },
-    editData: (state, action) => {
-      const { data } = action.payload;
-      return state.map((s) => (s.name === data.name ? data : s));
-    },
     searchData: (state, action) => {
-      const { value } = action.payload;
-      const re = new RegExp(value);
-      return value
-        ? state.filter(
-            (s) => Object.values(s).filter((o) => re.test(o)).length > 0
-          )
-        : initialState;
+      const query = action.payload;
+
+      const searchResult = state.data.filter((d) => {
+        return Object.entries(query).every(([key, value]) => {
+          const regexValue = new RegExp(value.toLowerCase());
+          const dataValue = d[key].toLowerCase();
+          return regexValue.test(dataValue);
+        });
+      });
+      return {
+        ...state,
+        rows: searchResult.length || 1,
+        searchData: searchResult,
+      };
+    },
+    resetSearchData: (state, action) => {
+      return {
+        ...state,
+        rows: state.data.length,
+        searchData: state.data,
+      };
     },
   },
   extraReducers: {
@@ -601,6 +605,7 @@ const dataSlice = createSlice({
   },
 });
 
-export const { addData, removeData, editData, searchData } = dataSlice.actions;
+export const { addData, removeData, editData, searchData, resetSearchData } =
+  dataSlice.actions;
 
 export default dataSlice.reducer;
