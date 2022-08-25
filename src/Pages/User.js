@@ -14,6 +14,10 @@ const AdminUser = (props) => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
 
+  const deletenotstatususer = (id) => {
+    setUsers(users.filter((user) => user._id !== id));
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await Promise.all([getUsers()]);
@@ -22,6 +26,9 @@ const AdminUser = (props) => {
     fetchData();
   }, []);
 
+  const deletemessage = (username) => {
+    message.success(`${username}刪除成功`);
+  };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -188,7 +195,7 @@ const AdminUser = (props) => {
       render: (_, record) => (
         <>
           <EditUser record={record} users={users} setUsers={setUsers} setisAdminUser={props.setisAdminUser}/>
-          {/* <Popconfirm
+          <Popconfirm
             placement="topRight"
             title="確定要刪除?"
             onConfirm={async () => {
@@ -212,7 +219,7 @@ const AdminUser = (props) => {
             >
               刪除
             </Button>
-          </Popconfirm> */}
+          </Popconfirm>
         </>
       ),
     },
