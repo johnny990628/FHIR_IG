@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Button, Modal } from "antd";
-import { putUser } from "../../Axios/user";
 import { Input, Checkbox, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { auth, logout } from "../../Redux/Slices/Auth";
+import { putUser } from "../../Axios/user";
 
 const EditUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [user, setUser] = useState({});
-    const [password, setPassword] = useState("");
-
+    const dispatch = useDispatch();
     useEffect(() => {
         const data = {};
         data._id = props.record._id;
@@ -30,12 +31,14 @@ const EditUser = (props) => {
     };
 
     const handleOk = () => {
-        if (props.record.userType === "admin") {
+        checkinputData(props.record.userType);
+        setIsModalVisible(false);
+    };
+
+    const checkinputData = (userType) => {
+        if (userType === "admin") {
             message.success("關閉檢視");
         } else {
-            if (password.trim() !== "") {
-                user.password;
-            }
             const data = [];
             props.users.map((item) => {
                 if (item._id === user._id) {
@@ -45,26 +48,44 @@ const EditUser = (props) => {
                 }
             });
 
+            //如果不修改username就直接putUser
             if (props.record.username === user.username) {
-                props.setUsers(data);
-                putUser(user);
+                putUser(user)
+                    .then((response) => {
+                        message.success("修改成功");
+                        props.setUsers(data); //更新props.users
+                    })
+                    .catch((error) => {
+                        message.error("登入憑證已過期，請重新登入");
+                        dispatch(logout());
+                        props.setisAdminUser("normal");
+                    });
             } else {
-                var sum = 0;
+                //判斷是否有重複username
+                var userRepeat = false;
                 props.users.map((item) => {
                     if (item.username === user.username) {
-                        sum++;
+                        userRepeat = true;
                     }
                 });
-                if (sum > 0) {
+
+                if (userRepeat) {
                     message.error("用戶名已存在");
                     user.username = props.record.username;
                 } else {
-                    props.setUsers(data);
-                    putUser(user);
+                    putUser(user)
+                        .then((response) => {
+                            message.success("修改成功");
+                            props.setUsers(data); //更新props.users
+                        })
+                        .catch((error) => {
+                            message.error("登入憑證已過期，請重新登入");
+                            dispatch(logout());
+                            props.setisAdminUser("normal");
+                        });
                 }
             }
         }
-        setIsModalVisible(false);
     };
 
     const handleCancel = () => {
@@ -106,7 +127,7 @@ const EditUser = (props) => {
                     檢視
                 </Button>
             ) : (
-                <Button type="primary"  onClick={showModal}>
+                <Button type="primary" onClick={showModal}>
                     編輯
                 </Button>
             )}
@@ -169,18 +190,6 @@ const EditUser = (props) => {
                                 value={user.email}
                                 onChange={(e) => {
                                     setUser({ ...user, email: e.target.value });
-                                }}
-                                style={Inputstyle}
-                            />
-                        </p>
-
-                        <p>
-                            密碼：
-                            <Input
-                                placeholder="密碼"
-                                value={password}
-                                onChange={(e) => {
-                                    setPassword(e.target.value);
                                 }}
                                 style={Inputstyle}
                             />

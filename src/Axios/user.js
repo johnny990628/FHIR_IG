@@ -26,30 +26,19 @@ export const getUser = async (id) => {
 
 export const putUser = (user) => {
     var date = new Date();
-    axios
-        .put(`${process.env.REACT_APP_BASE_URL}/api/user/${user._id}`, {
-            id: user._id,
-            _id: user._id,
-            username: user.username,
-            password: user.password,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            userType: user.userType,
-            status: user.status,
-            _createTime: user._createTime,
-            _updaterId: user._updaterId, //admin name
-            _upTime: date,
-        })
-        .then((response) => {
-            message.success("修改成功");
-            return response;
-        })
-        .catch((error) => {
-            message.error("登入憑證已過期，請重新登入");
-            delCookie("user");
-            return error.request;
-        });
+    return axios.put(`${process.env.REACT_APP_BASE_URL}/api/user/${user._id}`, {
+        id: user._id,
+        _id: user._id,
+        username: user.username,
+        password: user.password,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userType: user.userType,
+        status: user.status,
+        _updaterId: user._updaterId, //admin name
+        _upTime: date,
+    });
 };
 
 //取cookies
