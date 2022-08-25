@@ -195,7 +195,7 @@ const AdminUser = () => {
       render: (_, record) => (
         <>
           <EditUser record={record} users={users} setUsers={setUsers} />
-          <Popconfirm
+          {/* <Popconfirm
             placement="topRight"
             title="確定要刪除?"
             onConfirm={async () => {
@@ -219,7 +219,7 @@ const AdminUser = () => {
             >
               刪除
             </Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </>
       ),
     },

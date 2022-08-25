@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  apiCreateIG,
-  apiDeleteIG,
-  apiFetchIG,
-  apiUpdateIG,
+    apiCreateIG,
+    apiDeleteIG,
+    apiFetchIG,
+    apiUpdateIG,
 } from "../../Axios/data";
+import { logout } from "./Auth";
+import { message } from "antd";
 
 //假資料
 // const initialState = [
@@ -449,163 +451,200 @@ import {
 // ];
 
 const initialState = {
-  status: 0,
-  rows: 0,
-  category: [],
-  authority: [],
-  loading: false,
-  searchData: [],
-  data: [],
-  searchQuery: {},
+    status: 0,
+    rows: 0,
+    category: [],
+    authority: [],
+    loading: false,
+    searchData: [],
+    data: [],
+    searchQuery: {},
 };
 
 const fetchAndSortIG = async (params) => {
-  const response = await apiFetchIG(params);
-  if (response.data.status !== 1) throw "something went wrong";
-  const sortData = response.data.data.sort(
-    (a, b) => new Date(b._createTime) - new Date(a._createTime)
-  );
-  return { ...response.data, data: sortData, searchData: sortData };
+    const response = await apiFetchIG(params);
+    if (response.data.status !== 1) throw "something went wrong";
+    const sortData = response.data.data.sort(
+        (a, b) => new Date(b._createTime) - new Date(a._createTime)
+    );
+    return { ...response.data, data: sortData, searchData: sortData };
 };
 
 export const fetchIG = createAsyncThunk(
-  "data/fetchIG",
-  async (params, thunkAPI) => {
-    try {
-      const data = await fetchAndSortIG(params);
-      const category = new Set(data.data.map((d) => d.category));
-      const authority = new Set(data.data.map((d) => d.authority));
+    "data/fetchIG",
+    async (params, thunkAPI) => {
+        try {
+            const data = await fetchAndSortIG(params);
+            const category = new Set(data.data.map((d) => d.category));
+            const authority = new Set(data.data.map((d) => d.authority));
 
-      return { ...data, category: [...category], authority: [...authority] };
-    } catch (e) {
-      return thunkAPI.rejectWithValue();
+            return {
+                ...data,
+                category: [...category],
+                authority: [...authority],
+            };
+        } catch (e) {
+            return thunkAPI.rejectWithValue();
+        }
     }
-  }
 );
 export const createIG = createAsyncThunk(
-  "data/createIG",
-  async (data, thunkAPI) => {
-    try {
-      const response = await apiCreateIG(data);
-      if (response.data.status !== 1) throw "something went wrong";
-      const res = await fetchAndSortIG();
-      return res;
-    } catch (e) {
-      return thunkAPI.rejectWithValue();
+    "data/createIG",
+    async (data, thunkAPI) => {
+        try {
+            const response = await apiCreateIG(data);
+            if (response.data.status !== 1) throw "something went wrong";
+            if (response.status === 401) throw response.data.message;
+            if (response.status === 402) throw response.data.message;
+            const res = await fetchAndSortIG();
+            return res;
+        } catch (e) {
+            if (e.response.status === 401) thunkAPI.dispatch(logout());
+            return thunkAPI.rejectWithValue(e.response.data.message);
+        }
     }
-  }
 );
 export const updateIG = createAsyncThunk(
-  "data/updateIG",
-  async ({ id, data }, thunkAPI) => {
-    try {
-      const response = await apiUpdateIG(id, data);
-      if (response.data.status !== 1) throw "something went wrong";
-      const res = await fetchAndSortIG();
-      return res;
-    } catch (e) {
-      return thunkAPI.rejectWithValue();
+    "data/updateIG",
+    async ({ id, data }, thunkAPI) => {
+        try {
+            const response = await apiUpdateIG(id, data);
+            if (response.data.status !== 1) throw "something went wrong";
+            if (response.status === 401) throw response.data.message;
+            if (response.status === 402) throw response.data.message;
+            const res = await fetchAndSortIG();
+            return res;
+        } catch (e) {
+            if (e.response.status === 401) thunkAPI.dispatch(logout());
+            return thunkAPI.rejectWithValue(e.response.data.message);
+        }
     }
-  }
 );
 export const deleteIG = createAsyncThunk(
-  "data/deleteIG",
-  async (id, thunkAPI) => {
-    try {
-      const response = await apiDeleteIG(id);
-      if (response.data.status !== 1) throw "something went wrong";
-      const res = await fetchAndSortIG();
-      return res;
-    } catch (e) {
-      return thunkAPI.rejectWithValue();
+    "data/deleteIG",
+    async (id, thunkAPI) => {
+        try {
+            const response = await apiDeleteIG(id);
+            if (response.data.status !== 1) throw "something went wrong";
+            if (response.status === 401) throw response.data.message;
+            if (response.status === 402) throw response.data.message;
+            const res = await fetchAndSortIG();
+            return res;
+        } catch (e) {
+            if (e.response.status === 401) thunkAPI.dispatch(logout());
+            return thunkAPI.rejectWithValue(e.response.data.message);
+        }
     }
-  }
 );
 
 const dataSlice = createSlice({
-  name: "data",
-  initialState,
-  reducers: {
-    searchData: (state, action) => {
-      const query = action.payload;
+    name: "data",
+    initialState,
+    reducers: {
+        searchData: (state, action) => {
+            const query = action.payload;
 
-      const searchResult = state.data.filter((d) => {
-        return Object.entries(query).every(([key, value]) => {
-          const regexValue = new RegExp(value.toLowerCase());
-          const dataValue = d[key].toLowerCase();
-          return regexValue.test(dataValue);
-        });
-      });
-      return {
-        ...state,
-        rows: searchResult.length || 1,
-        searchData: searchResult,
-      };
+            const searchResult = state.data.filter((d) => {
+                return Object.entries(query).every(([key, value]) => {
+                    const regexValue = new RegExp(value.toLowerCase());
+                    const dataValue = d[key].toLowerCase();
+                    return regexValue.test(dataValue);
+                });
+            });
+            return {
+                ...state,
+                rows: searchResult.length || 1,
+                searchData: searchResult,
+            };
+        },
+        resetSearchData: (state, action) => {
+            return {
+                ...state,
+                rows: state.data.length,
+                searchData: state.data,
+            };
+        },
     },
-    resetSearchData: (state, action) => {
-      return {
-        ...state,
-        rows: state.data.length,
-        searchData: state.data,
-      };
+    extraReducers: {
+        [fetchIG.pending]: (state, action) => {
+            return {
+                ...state,
+                loading: true,
+            };
+        },
+        [fetchIG.fulfilled]: (state, action) => {
+            return {
+                ...action.payload,
+                loading: false,
+            };
+        },
+        [createIG.pending]: (state, action) => {
+            return {
+                ...state,
+                loading: true,
+            };
+        },
+        [createIG.fulfilled]: (state, action) => {
+            message.success(`新增成功`);
+            return {
+                ...state,
+                ...action.payload,
+                loading: false,
+            };
+        },
+        [createIG.rejected]: (state, action) => {
+            message.error(action.payload);
+            return {
+                ...state,
+                loading: false,
+            };
+        },
+        [updateIG.pending]: (state, action) => {
+            return {
+                ...state,
+                loading: true,
+            };
+        },
+        [updateIG.fulfilled]: (state, action) => {
+            message.success(`更新成功`);
+            return {
+                ...state,
+                ...action.payload,
+                loading: false,
+            };
+        },
+        [updateIG.rejected]: (state, action) => {
+            message.error(action.payload);
+            return {
+                ...state,
+                loading: false,
+            };
+        },
+        [deleteIG.pending]: (state, action) => {
+            return {
+                ...state,
+                loading: true,
+            };
+        },
+        [deleteIG.fulfilled]: (state, action) => {
+            message.success(`刪除成功`);
+            return {
+                ...state,
+                ...action.payload,
+                loading: false,
+            };
+        },
+        [deleteIG.rejected]: (state, action) => {
+            message.error(action.payload);
+            return {
+                ...state,
+                loading: false,
+            };
+        },
     },
-  },
-  extraReducers: {
-    [fetchIG.pending]: (state, action) => {
-      return {
-        ...state,
-        loading: true,
-      };
-    },
-    [fetchIG.fulfilled]: (state, action) => {
-      return {
-        ...action.payload,
-        loading: false,
-      };
-    },
-    [createIG.pending]: (state, action) => {
-      return {
-        ...state,
-        loading: true,
-      };
-    },
-    [createIG.fulfilled]: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-        loading: false,
-      };
-    },
-    [updateIG.pending]: (state, action) => {
-      return {
-        ...state,
-        loading: true,
-      };
-    },
-    [updateIG.fulfilled]: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-        loading: false,
-      };
-    },
-    [deleteIG.pending]: (state, action) => {
-      return {
-        ...state,
-        loading: true,
-      };
-    },
-    [deleteIG.fulfilled]: (state, action) => {
-      return {
-        ...state,
-        ...action.payload,
-        loading: false,
-      };
-    },
-  },
 });
 
 export const { addData, removeData, editData, searchData, resetSearchData } =
-  dataSlice.actions;
+    dataSlice.actions;
 
 export default dataSlice.reducer;
