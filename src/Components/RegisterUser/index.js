@@ -138,19 +138,19 @@ const RegisterUser = (props) => {
       dataIndex: "username",
       key: "username",
       ...getColumnSearchProps("username"),
-      render: (text) => <text>{text}</text>,
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "姓氏",
       dataIndex: "firstName",
       key: "firstName",
-      render: (text) => <text>{text}</text>,
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "名字",
       dataIndex: "lastName",
       key: "lastName",
-      render: (text) => <text>{text}</text>,
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "Email",
@@ -171,9 +171,9 @@ const RegisterUser = (props) => {
         var date = new Date(user._createTime);
         date.setHours(date.getHours() - 8);
         return (
-          <text>{`${date.getFullYear()}/${
+          <p>{`${date.getFullYear()}/${
             date.getMonth() + 1
-          }/${date.getDate()}_${date.getHours()}:${date.getMinutes()}`}</text>
+          }/${date.getDate()}_${date.getHours()}:${date.getMinutes()}`}</p>
         );
       },
     },

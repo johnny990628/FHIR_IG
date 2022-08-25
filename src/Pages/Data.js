@@ -132,7 +132,7 @@ const Data = () => {
                 isLogin && (
                     <Space>
                         <Button
-                            primary
+                            primary="true"
                             onClick={() => handleEdit(record)}
                             icon={<ScissorOutlined />}
                         >

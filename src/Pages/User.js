@@ -8,15 +8,11 @@ import { getUsers } from "../Axios/user.js";
 import RegisterUser from "../Components/RegisterUser";
 import EditUser from "../Components/EditUser";
 
-const AdminUser = () => {
+const AdminUser = (props) => {
   const [users, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-
-  const deletenotstatususer = (id) => {
-    setUsers(users.filter((user) => user._id !== id));
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,9 +22,6 @@ const AdminUser = () => {
     fetchData();
   }, []);
 
-  const deletemessage = (username) => {
-    message.success(`${username}刪除成功`);
-  };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -139,19 +132,19 @@ const AdminUser = () => {
       dataIndex: "username",
       key: "username",
       ...getColumnSearchProps("username"),
-      render: (text) => <text>{text}</text>,
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "姓氏",
       dataIndex: "firstName",
       key: "firstName",
-      render: (text) => <text>{text}</text>,
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "名字",
       dataIndex: "lastName",
       key: "lastName",
-      render: (text) => <text>{text}</text>,
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "帳號建立時間",
@@ -166,9 +159,9 @@ const AdminUser = () => {
         var date = new Date(user._createTime);
         date.setHours(date.getHours() - 8);
         return (
-          <text>{`${date.getFullYear()}/${
+          <p>{`${date.getFullYear()}/${
             date.getMonth() + 1
-          }/${date.getDate()}_${date.getHours()}:${date.getMinutes()}`}</text>
+          }/${date.getDate()}_${date.getHours()}:${date.getMinutes()}`}</p>
         );
       },
     },
@@ -194,7 +187,7 @@ const AdminUser = () => {
       key: "action",
       render: (_, record) => (
         <>
-          <EditUser record={record} users={users} setUsers={setUsers} />
+          <EditUser record={record} users={users} setUsers={setUsers} setisAdminUser={props.setisAdminUser}/>
           {/* <Popconfirm
             placement="topRight"
             title="確定要刪除?"
@@ -260,7 +253,7 @@ const User = () => {
   }, []);
 
   return (
-    <div>{isAdminUser === "admin" ? <AdminUser /> : <NotAdminUser />}</div>
+    <div>{isAdminUser === "admin" ? <AdminUser setisAdminUser={setisAdminUser}/> : <NotAdminUser />}</div>
   );
 };
 
