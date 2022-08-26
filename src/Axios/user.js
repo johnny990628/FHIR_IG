@@ -52,6 +52,7 @@ export const deleteUser = async (id) => {
                 console.log(response);
             })
             .catch((error) => {
+                message.error("該成員擁有IG，無法刪除");
                 console.log(error.request);
             });
     } catch (error) {
